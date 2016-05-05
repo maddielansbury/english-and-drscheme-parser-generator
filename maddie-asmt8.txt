@@ -32,6 +32,45 @@ dl_string_to_atom(Big,Little,Adam)
   :- diffListConvert(Big,Little,Listy),
      atom_codes(Adam,Listy).
 
+
+%%  isLetter
+%% ----------------------------
+%%  INPUT:  C, a number
+%% ----------------------------
+%%  isLetter(C) holds if C is an ASCII code for a letter 
+%%  (either from 'a' to 'z', or from 'A' to 'Z').
+%%  NOTE:  =< and >= work well on ASCII codes (i.e., numbers).
+
+%%  Case 1:  C is the code for a lower-case letter
+isLetter(C) :-  
+  char_code(a,Ca),
+  char_code(z,Cz),
+  C >= Ca,
+  C =< Cz.
+
+%%  Case 2:  C is the code for an upper-case letter
+isLetter(C) :-
+  char_code('A',CA),
+  char_code('Z',CZ),
+  C >= CA,
+  C =< CZ.
+
+
+%%  isNumeral
+%% ----------------------------
+%%  INPUT:  C, a number
+%% ----------------------------
+%%  isLetter(C) holds if C is an ASCII code for a numeral 
+%%  (from '0' to '9').
+
+isNumeral(C) :-  
+  char_code('0',Cz),
+  char_code('9',Cn),
+  C >= Cz,
+  C =< Cn.
+
+%%---------------------------------------------------------------
+
 true --> "#t".
 false --> "#f".
 bool --> true.
@@ -48,5 +87,8 @@ boolParse(bool(Boolean),Xs,Ys) :-
   true(Xs,Ys),
   trueParse(Boolean,Xs,Ys).
 
-
 null --> "()".
+nullParse(null,Xs,Ys) :-
+  null(Xs,Ys).
+
+

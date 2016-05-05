@@ -1,0 +1,47 @@
+%%  diffListConvert(Xs,Ys,Regular)
+%% ---------------------------------------
+%%    holds if Xs/Ys is a difference list
+%%    representation of Regular
+
+%%  Base Case: empty list
+
+diffListConvert(Ys,Ys,[]).
+
+%%  Recursive Case:  non-empty list
+
+diffListConvert([X|Big], Little, [X|Regular])
+  :- diffListConvert(Big,Little,Regular).
+
+
+%%  dl_string_to_number(Big,Little,Numby).
+%% -----------------------------------------------------
+%%  Holds if the Difference List Big/Little is a String
+%%  representation of the Prolog number Numby.
+
+dl_string_to_number(Big,Little,Numby) 
+  :- diffListConvert(Big,Little,Listy),
+     number_codes(Numby,Listy).
+
+
+%%  dl_string_to_atom(Big,Little,Adam).
+%% -----------------------------------------------------
+%%  Holds if the Difference List Big/Little is a String
+%%  representation of the Prolog atom Adam.
+
+dl_string_to_atom(Big,Little,Adam)
+  :- diffListConvert(Big,Little,Listy),
+     atom_codes(Adam,Listy).
+
+
+bool(true).
+bool(false).
+
+boolean --> "#t".
+boolean --> "#f".
+boolParse(Regular,Xs,Ys) :-
+  boolean(Xs,Ys),
+  dl_string_to_atom(Xs,Ys,Regular).
+
+
+cons(null,null).
+null --> "()".

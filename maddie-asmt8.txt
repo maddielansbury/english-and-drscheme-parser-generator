@@ -32,16 +32,21 @@ dl_string_to_atom(Big,Little,Adam)
   :- diffListConvert(Big,Little,Listy),
      atom_codes(Adam,Listy).
 
+true --> "#t".
+false --> "#f".
+bool --> true.
+bool --> false.
 
-bool(true).
-bool(false).
+trueParse(true,Xs,Ys) :-
+  true(Xs,Ys).
+falseParse(false,Xs,Ys) :-
+  false(Xs,Ys).
+boolParse(bool(Boolean),Xs,Ys) :-
+  false(Xs,Ys),
+  falseParse(Boolean,Xs,Ys).
+boolParse(bool(Boolean),Xs,Ys) :-
+  true(Xs,Ys),
+  trueParse(Boolean,Xs,Ys).
 
-boolean --> "#t".
-boolean --> "#f".
-boolParse(Regular,Xs,Ys) :-
-  boolean(Xs,Ys),
-  dl_string_to_atom(Xs,Ys,Regular).
 
-
-cons(null,null).
 null --> "()".

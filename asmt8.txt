@@ -1,3 +1,15 @@
-bool --> "#t".
-bool --> "#f".
-empty --> "()".
+true --> "#t".
+false --> "#f".
+bool --> true.
+bool --> false.
+
+trueParse(true,Xs,Ys) :-
+  true(Xs,Ys).
+falseParse(false,Xs,Ys) :-
+  false(Xs,Ys).
+boolParse(bool(Boolean),Xs,Ys) :-
+  false(Xs,Ys),
+  falseParse(Boolean,Xs,Ys).
+boolParse(bool(Boolean),Xs,Ys) :-
+  true(Xs,Ys),
+  trueParse(Boolean,Xs,Ys).

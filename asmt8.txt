@@ -51,9 +51,17 @@ boolParse(bool(Boolean),Xs,Ys) :-
   falseParse(Boolean,Xs,Ys).
 boolParse(bool(Boolean),Xs,Ys) :-
   true(Xs,Ys),
-  trueParse(Boolean,Xs,Ys).'
+  trueParse(Boolean,Xs,Ys).
 
 
 null --> "()".
 nullParse(null,Xs,Ys) :-
   null(Xs,Ys).
+
+allParse(P, Xs, Ys) :-
+  bool(Xs,Ys),
+  boolParse(P,Xs,Ys).
+
+allParse(P, Xs, Ys) :-
+  null(Xs,Ys),
+  nullParse(P,Xs,Ys).

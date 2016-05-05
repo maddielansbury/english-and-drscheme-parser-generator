@@ -1,0 +1,61 @@
+exprwrapper(scheme(string_to_list(X, []))).
+
+scheme --> bool.
+scheme --> bool, scheme.
+
+scheme --> empty.
+scheme --> empty, scheme.
+
+scheme --> number.
+scheme --> number, scheme.
+
+scheme --> word.
+scheme --> word, scheme.
+
+bool --> ["#t"].
+bool --> ["#f"].
+empty --> ["()"].
+
+number --> digit.
+number --> digit, number.
+
+word --> letter.
+word --> letter, word.
+
+digit --> ["0"].
+digit --> ["1"].
+digit --> ["2"].
+digit --> ["3"].
+digit --> ["4"].
+digit --> ["5"].
+digit --> ["6"].
+digit --> ["7"].
+digit --> ["8"].
+digit --> ["9"].
+
+letter --> ["a"].
+letter --> ["b"].
+letter --> ["c"].
+letter --> ["d"].
+letter --> ["e"].
+letter --> ["f"].
+letter --> ["g"].
+letter --> ["h"].
+letter --> ["i"].
+letter --> ["j"].
+letter --> ["k"].
+letter --> ["l"].
+letter --> ["m"].
+letter --> ["n"].
+letter --> ["o"].
+letter --> ["p"].
+letter --> ["q"].
+letter --> ["r"].
+letter --> ["s"].
+letter --> ["t"].
+letter --> ["u"].
+letter --> ["v"].
+letter --> ["w"].
+letter --> ["x"].
+letter --> ["y"].
+letter --> ["z"].

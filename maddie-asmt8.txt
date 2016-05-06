@@ -92,3 +92,31 @@ nullParse(null,Xs,Ys) :-
   null(Xs,Ys).
 
 
+%numO(Xs,Ys) :-
+%  diffListConvert(Xs,Ys,N),
+%  isNumeral(N).
+
+numOne --> [N], {isNumeral(N)}.
+
+num --> numOne.
+num --> numOne, num.
+
+numParse(num(Atnum),Xs,Ys) :-
+  num(Xs,Ys),
+  dl_string_to_number(Xs,Ys,Atnum).
+
+
+
+idOne --> [L], {isLetter(L)}.
+
+id --> idOne.
+id --> idOne, id.
+
+idParse(id(Atid),Xs,Ys) :-
+  id(Xs,Ys),
+  dl_string_to_atom(Xs,Ys,Atid).
+
+
+
+
+

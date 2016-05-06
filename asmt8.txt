@@ -58,6 +58,12 @@ dl_string_to_atom(Big,Little,Adam)
 
 %%---------------------------------------------------------------
 
+scheme --> bool.
+scheme --> num.
+scheme --> id.
+scheme --> null.
+
+
 true --> "#t".
 false --> "#f".
 bool --> true.
@@ -74,6 +80,7 @@ boolParse(bool(Boolean),Xs,Ys) :-
   true(Xs,Ys),
   trueParse(Boolean,Xs,Ys).
 
+
 numOne --> [N], {isNumeral(N)}.
 num --> numOne.
 num --> numOne, num.
@@ -82,6 +89,7 @@ numParse(num(Atnum),Xs,Ys) :-
   num(Xs,Ys),
   dl_string_to_number(Xs,Ys,Atnum).
 
+
 idOne --> [L], {isLetter(L)}.
 id --> idOne.
 id --> idOne, id.
@@ -89,6 +97,10 @@ id --> idOne, id.
 idParse(id(Atid),Xs,Ys) :-
   id(Xs,Ys),
   dl_string_to_atom(Xs,Ys,Atid).
+
+
+listSingle --> "(", scheme, ")".
+
 
 null --> "()".
 nullParse(null,Xs,Ys) :-

@@ -116,7 +116,30 @@ idParse(id(Atid),Xs,Ys) :-
   id(Xs,Ys),
   dl_string_to_atom(Xs,Ys,Atid).
 
+allParse(P, Xs, Ys) :-
+  bool(Xs,Ys),
+  boolParse(P,Xs,Ys).
 
+allParse(P, Xs, Ys) :-
+  null(Xs,Ys),
+  nullParse(P,Xs,Ys).
 
+allParse(P, Xs, Ys) :-
+  id(Xs,Ys),
+  idParse(P,Xs,Ys).
+  
+allParse(P, Xs, Ys) :-
+  num(Xs,Ys),
+  numParse(P,Xs,Ys).
+
+scheme --> bool.
+scheme --> num.
+scheme --> id.
+scheme --> null.
+
+parenL --> "(".
+parenR --> ")".
+
+listSingle --> "(", scheme, ")".
 
 

@@ -1,3 +1,17 @@
+%%  diffListConvert(Xs,Ys,Regular)
+%% ---------------------------------------
+%%    holds if Xs/Ys is a difference list
+%%    representation of Regular
+
+%%  Base Case: empty list
+
+diffListConvert(Ys,Ys,[]).
+
+%%  Recursive Case:  non-empty list
+
+diffListConvert([X|Big], Little, [X|Regular])
+  :- diffListConvert(Big,Little,Regular).
+
 %%  isLetter
 %% ----------------------------
 %%  INPUT:  C, a number
@@ -98,9 +112,11 @@ idParse(id(Atid),Xs,Ys) :-
   id(Xs,Ys),
   dl_string_to_atom(Xs,Ys,Atid).
 
-
 listSingle --> "(", scheme, ")".
 
+listParse(list(Atid),Xs,Ys) :-
+  listSingle(Xs,Ys),
+  dl_string_to_atom(Xs,Ys,Atid).
 
 null --> "()".
 nullParse(null,Xs,Ys) :-
@@ -121,3 +137,7 @@ allParse(P, Xs, Ys) :-
 allParse(P, Xs, Ys) :-
   num(Xs,Ys),
   numParse(P,Xs,Ys).
+  
+allParse(P, Xs, Ys) :-
+  listSingle(Xs,Ys),
+  listParse(P,Xs,Ys).

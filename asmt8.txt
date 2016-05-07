@@ -101,6 +101,15 @@ idParse(id(Atid),Xs,Ys) :-
 
 listSingle --> "(", scheme, ")".
 
+listContents(Contents,Xs,Ys) :-
+  diffListConvert(Xs,Ys,[40|Rest]),
+  diffListConvert(Rest,")",Contents).
+
+listSingleParse(cons(Item,null), Xs, Ys) :-
+  listSingle(Xs,Ys),
+  listContents(Contents,Xs,Ys),
+  allParse(Item,Contents,"").
+
 
 null --> "()".
 nullParse(null,Xs,Ys) :-

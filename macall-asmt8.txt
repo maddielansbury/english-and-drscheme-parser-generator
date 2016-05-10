@@ -34,7 +34,6 @@ isLetter(C) :-
   C >= CA,
   C =< CZ.
 
-
 %%  isNumeral
 %% ----------------------------
 %%  INPUT:  C, a number
@@ -68,8 +67,6 @@ dl_string_to_atom(Big,Little,Adam)
   :- diffListConvert(Big,Little,Listy),
      atom_codes(Adam,Listy).
 
-
-
 %%---------------------------------------------------------------
 
 scheme --> bool.
@@ -77,6 +74,15 @@ scheme --> num.
 scheme --> id.
 scheme --> null.
 
+valid --> scheme, whitespace.
+valid --> scheme, ")".
+valid --> whitespace, valid.
+
+expr --> valid.
+expr --> valid, expr.
+
+whitespace --> " ".
+whitespace --> " ", whitespace.
 
 true --> "#t".
 false --> "#f".
@@ -114,9 +120,14 @@ idParse(id(Atid),Xs,Ys) :-
 
 listSingle --> "(", scheme, ")".
 
-listParse(list(Atid),Xs,Ys) :-
+listContents(Contents,Xs,Ys) :-
+  diffListConvert(Xs,Ys,[40|Rest]),
+  diffListConvert(Rest,Contents,")").
+
+listSingleParse(cons(Item,null), Xs, Ys) :-
   listSingle(Xs,Ys),
-  dl_string_to_atom(Xs,Ys,Atid).
+  listContents(Contents,Xs,Ys),
+  allParse(Item,Contents,"").
 
 null --> "()".
 nullParse(null,Xs,Ys) :-

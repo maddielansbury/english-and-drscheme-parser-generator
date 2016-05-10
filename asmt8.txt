@@ -124,7 +124,6 @@ listSingleParse(cons(Item,null), Xs, Ys) :-
   listContents(Contents,Xs,Ys),
   allParse(Item,Contents,"").
 
-
 null --> "()".
 nullParse(null,Xs,Ys) :-
   null(Xs,Ys).

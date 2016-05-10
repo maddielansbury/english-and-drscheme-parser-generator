@@ -109,10 +109,11 @@ wsopt --> "".
 wsopt --> ws.
 
 listItem(Tree) --> wsopt, scheme(Tree), ws.
-listItem(Tree) --> wsopt, scheme(Tree), ")".
+listItem(cons(Tree, null)) --> wsopt, scheme(Tree), wsopt, ")".
 
 list(Tree) --> listItem(Tree).
 list(cons(Tree,RTree)) --> listItem(Tree), list(RTree).
 
 expr(Tree) --> scheme(Tree).
 expr(Tree) --> "(", list(Tree).
+

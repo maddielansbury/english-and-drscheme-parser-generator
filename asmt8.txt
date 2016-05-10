@@ -76,6 +76,7 @@ scheme(Tree) --> bool(Tree).
 scheme(Tree) --> num(Tree).
 scheme(Tree) --> id(Tree).
 scheme(Tree) --> null(Tree).
+scheme(Tree) --> "(", list(Tree).
 
 
 bool(bool(true)) --> "#t".

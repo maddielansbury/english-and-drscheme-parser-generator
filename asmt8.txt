@@ -72,78 +72,44 @@ dl_string_to_atom(Big,Little,Adam)
 
 %%---------------------------------------------------------------
 
-scheme --> bool.
-scheme --> num.
-scheme --> id.
-scheme --> null.
+scheme(Tree) --> bool(Tree).
+scheme(Tree) --> num(Tree).
+scheme(Tree) --> id(Tree).
+scheme(Tree) --> null(Tree).
 
 
-true --> "#t".
-false --> "#f".
-bool --> true.
-bool --> false.
-
-trueParse(true,Xs,Ys) :-
-  true(Xs,Ys).
-falseParse(false,Xs,Ys) :-
-  false(Xs,Ys).
-boolParse(bool(Boolean),Xs,Ys) :-
-  false(Xs,Ys),
-  falseParse(Boolean,Xs,Ys).
-boolParse(bool(Boolean),Xs,Ys) :-
-  true(Xs,Ys),
-  trueParse(Boolean,Xs,Ys).
+bool(bool(true)) --> "#t".
+bool(bool(false)) --> "#f".
 
 
-numOne --> [N], {isNumeral(N)}.
-num --> numOne.
-num --> numOne, num.
+aNum --> [N], {isNumeral(N)}.
+nums --> aNum.
+nums --> aNum, nums.
 
-numParse(num(Atnum),Xs,Ys) :-
-  num(Xs,Ys),
+num(num(Atnum),Xs,Ys) :-
+  nums(Xs,Ys),
   dl_string_to_number(Xs,Ys,Atnum).
 
 
-idOne --> [L], {isLetter(L)}.
-id --> idOne.
-id --> idOne, id.
+anId --> [L], {isLetter(L)}.
+ids --> anId.
+ids --> anId, ids.
 
-idParse(id(Atid),Xs,Ys) :-
-  id(Xs,Ys),
+id(id(Atid),Xs,Ys) :-
+  ids(Xs,Ys),
   dl_string_to_atom(Xs,Ys,Atid).
 
-listSingle --> "(", scheme, ")".
+
+null(null) --> "()".
 
 
-listContents(Contents,Xs,Ys) :-
-  diffListConvert(Xs,Ys,[40|Rest]),
-  diffListConvert(Rest,")",Contents).
+ws --> " ".
+ws --> " ", ws.
+wsopt --> "".
+wsopt --> ws.
 
-listSingleParse(cons(Item,null), Xs, Ys) :-
-  listSingle(Xs,Ys),
-  listContents(Contents,Xs,Ys),
-  allParse(Item,Contents,"").
+valid(Tree) --> wsopt, scheme(Tree), ws.
+valid(Tree) --> wsopt, scheme(Tree), ")".
 
-null --> "()".
-nullParse(null,Xs,Ys) :-
-  null(Xs,Ys).
-
-allParse(P, Xs, Ys) :-
-  bool(Xs,Ys),
-  boolParse(P,Xs,Ys).
-
-allParse(P, Xs, Ys) :-
-  null(Xs,Ys),
-  nullParse(P,Xs,Ys).
-
-allParse(P, Xs, Ys) :-
-  id(Xs,Ys),
-  idParse(P,Xs,Ys).
-  
-allParse(P, Xs, Ys) :-
-  num(Xs,Ys),
-  numParse(P,Xs,Ys).
-  
-allParse(P, Xs, Ys) :-
-  listSingle(Xs,Ys),
-  listParse(P,Xs,Ys).
+expr(Tree) --> valid(Tree).
+expr(cons(Tree,RTree)) --> valid(Tree), expr(RTree).

@@ -1,59 +1,44 @@
-%%  Sentence is a noun phrase followed by a verb phrase.
-%%   NOTE:  xS, xNP and xVP are all PREDICATES.
-%%          (Each has two hidden arguments.) 
-
-% xS --> xNP, xVP.
-
 %% Building noun phrases...
 
-% xNP --> xPropNoun.
-% xNP --> xDet, xNoun.
-
-xNP(Tense) --> xPropNoun(Tense).
-xNP(Tense) --> xDet(Tense), xNoun(Tense).
+xNP(Tense, Num, Person) --> xPropNoun(Tense, Num, Person).
+xNP(Tense, Num, Person) --> xDet(Tense, Num, Person), xNoun(Tense, Num, Person).
+% xNP(Tense, Num, Person) --> xPronoun(Tense, Num, Person).
 
 %% Some words...
 
-xDet(presentS) --> [a].
-xDet(presentS) --> [the].
-xDet(presentP) --> [some].
-xDet(presentP) --> [the].
-xDet(pastS) --> [a].
-xDet(pastS) --> [the].
-xDet(pastP) --> [some].
-xDet(pastP) --> [the].
+xDet(_, singular, third) --> [a].
+xDet(_, _, third) --> [the].
+xDet(_, plural, third) --> [some].
+%xDet(present, plural, third) --> [the].
+%xDet(past, singular, third) --> [a].
+%xDet(past, singular, third) --> [the].
+%xDet(past, plural, third) --> [some].
+%xDet(past, plural, third) --> [the].
 
-xNoun(presentS) --> [boy].
-xNoun(presentP) --> [boys].
-xNoun(pastS) --> [boy].
-xNoun(pastP) --> [boys].
+xNoun(present, singular, third) --> [boy].
+xNoun(present, plural, third) --> [boys].
+xNoun(past, singular, third) --> [boy].
+xNoun(past, plural, third) --> [boys].
 
-xNoun(presentS) --> [girl].
-xNoun(presentP) --> [girls].
-xNoun(pastS) --> [girl].
-xNoun(pastP) --> [girls].
+xNoun(present, singular, third) --> [girl].
+xNoun(present, plural, third) --> [girls].
+xNoun(past, singular, third) --> [girl].
+xNoun(past, plural, third) --> [girls].
 
-xPropNoun(presentS) --> [luke, hunsberger].
-xPropNoun(presentP) --> [barack, hussein, obamas].
-xPropNoun(pastS) --> [luke, hunsberger].
-xPropNoun(pastP) --> [barack, hussein, obamas].
+xPropNoun(present, singular, third) --> [luke, hunsberger].
+xPropNoun(present, singular, third) --> [barack, hussein, obama].
+xPropNoun(present, plural, third) --> [luke, hunsbergers].
+xPropNoun(present, plural, third) --> [barack, hussein, obamas].
+xPropNoun(past, singular, third) --> [luke, hunsberger].
+xPropNoun(past, singular, third) --> [barack, hussein, obama].
+xPropNoun(past, plural, third) --> [luke, hunsbergers].
+xPropNoun(past, plural, third) --> [barack, hussein, obamas].
 
-
-%% Building verb phrases...
-
-% xVP --> xIVerb.
-% xVP --> xTVerb, xNP.
-% xVP --> xIVerb, xIObj.
-xIObj(Tense) --> xPrep, xNP(Tense).
 
 %% Some more words...
 
-% xIVerb --> [runs].
-
 xPrep --> [to].
 xPrep --> [from].
-
-% xTVerb --> [trips].
 
 %% Try this query:  xS(Ss,[]) <------ i.e., Ss is the list of words
 %%                                    [] is the rest of the words...
@@ -69,20 +54,11 @@ xxxx(Ss) :- xS(Ss,[]).  %% <--- Notice that we are supplying the
 
 %% Try this query:  xxxx([A,B,C,D]).
 
-
-%% =======================================================
-%%  Adding extra arguments to the predicates
-%% =======================================================
-%%  For example, below we add an extra TENSE argument.
-%%  The Tense variable can have values such as present,
-%%  past, infinitive, etc.
-
 %%  A sentence is formed by a noun phrase followed by a verb phrase.
 %%  The tense of the verb phrase must be the same as the tense of
 %%  the sentence.
 
-%xS(Tense) --> xNP, xVP(Tense).
-xS(Tense) --> xNP(Tense), xVP(Tense).
+xS(Tense, Num, Person) --> xNP(Tense, Num, Person), xVP(Tense, Num, Person).
 
 
 %%  In the above, Tense is the *first* arugment of the "xS" predicate.
@@ -91,36 +67,38 @@ xS(Tense) --> xNP(Tense), xVP(Tense).
 %%  Building verb phrases using a Tense variable to ensure that
 %%  the tenses of the parts match the tense of the whole.
 
-xVP(Tense) --> xIVerb(Tense).
-xVP(Tense) --> xTVerb(Tense), xNP(Tense).
-xVP(Tense) --> xIVerb(Tense), xIObj(Tense).
+xIObj(Tense, Num, Person) --> xPrep, xNP(Tense, Num, Person).
+xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person).
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xNP(Tense, Num, Person).
+xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj(Tense, Num, Person).
 
 %%  Individual words.  Here, the tense of a given word is
 %%  specified by a constant (e.g., past or present).
 
-xIVerb(presentS) --> [runs].
-xIVerb(presentP) --> [run].
-xIVerb(inf) --> [run].
-xIVerb(pastS) --> [ran].
-xIVerb(pastP) --> [ran].
-xTVerb(presentS) --> [trips].
-xTVerb(presentP) --> [trip].
-xTVerb(inf) --> [trip].
-xTVerb(pastS) --> [tripped].
-xTVerb(pastP) --> [tripped].
+xIVerb(present, singular, third) --> [runs].
+xIVerb(present, plural, third) --> [run].
+% xIVerb(inf) --> [run].
+xIVerb(past, singular, third) --> [ran].
+xIVerb(past, plural, third) --> [ran].
+xTVerb(present, singular, third) --> [trips].
+xTVerb(present, plural, third) --> [trip].
+% xTVerb(inf) --> [trip].
+xTVerb(past, singular, third) --> [tripped].
+xTVerb(past, plural, third) --> [tripped].
 
 
 %%  xHelper:  holds for the helper verbs "does", "did", etc.
 
 xHelper(presentS) --> [does].
+xHelper(presentP) --> [do].
 xHelper(pastS) --> [did].
-
+xHelper(pastP) --> [did].
 
 %%  Forming questions from a sentence...
 %%  If S(present) = NP, VP(present) is a sentence then 
 %%   Q = [does], NP, VP(infinitive) is a corresponding question.
 
-xQ(Tense) --> xHelper(Tense), xNP(Tense), xVP(inf).
+xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xVP(inf).
 
 %% Try:  xQ(present, Q, []). <--- don't forget the diff lists!
 
@@ -130,7 +108,7 @@ xQ(Tense) --> xHelper(Tense), xNP(Tense), xVP(inf).
 %%  Tense argument followed by the two (normally hidden) arguments
 %%  representing the big and little parts of a difference list:
 
-xQQQ(Ss,Tense) :- xQ(Tense, Ss, []). 
+xQQQ(Ss,Tense, Num, Person) :- xQ(Tense, Num, Person, Ss, []). 
 
 %%  Try this query:  xQQQ([A,B,C,D,E],past).  <--- arbitrary five-word 
 %%                                                 question in past tense.

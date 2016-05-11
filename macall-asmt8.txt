@@ -99,11 +99,16 @@ xVP(Tense) --> xIVerb(Tense), xIObj(Tense).
 %%  specified by a constant (e.g., past or present).
 
 xIVerb(presentS) --> [runs].
+xIVerb(presentP) --> [run].
 xIVerb(inf) --> [run].
 xIVerb(pastS) --> [ran].
+xIVerb(pastP) --> [ran].
 xTVerb(presentS) --> [trips].
+xTVerb(presentP) --> [trip].
 xTVerb(inf) --> [trip].
 xTVerb(pastS) --> [tripped].
+xTVerb(pastP) --> [tripped].
+
 
 %%  xHelper:  holds for the helper verbs "does", "did", etc.
 

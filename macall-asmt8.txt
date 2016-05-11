@@ -44,14 +44,16 @@ xPropNoun(pastP) --> [barack, hussein, obamas].
 % xVP --> xIVerb.
 % xVP --> xTVerb, xNP.
 % xVP --> xIVerb, xIObj.
-xIObj --> xPrep, xNP.
+xIObj(Tense) --> xPrep, xNP(Tense).
 
 %% Some more words...
 
-xIVerb --> [runs].
+% xIVerb --> [runs].
+
 xPrep --> [to].
 xPrep --> [from].
-xTVerb --> [trips].
+
+% xTVerb --> [trips].
 
 %% Try this query:  xS(Ss,[]) <------ i.e., Ss is the list of words
 %%                                    [] is the rest of the words...
@@ -90,8 +92,8 @@ xS(Tense) --> xNP(Tense), xVP(Tense).
 %%  the tenses of the parts match the tense of the whole.
 
 xVP(Tense) --> xIVerb(Tense).
-xVP(Tense) --> xTVerb(Tense), xNP.
-xVP(Tense) --> xIVerb(Tense), xIObj.
+xVP(Tense) --> xTVerb(Tense), xNP(Tense).
+xVP(Tense) --> xIVerb(Tense), xIObj(Tense).
 
 %%  Individual words.  Here, the tense of a given word is
 %%  specified by a constant (e.g., past or present).
@@ -113,7 +115,7 @@ xHelper(pastS) --> [did].
 %%  If S(present) = NP, VP(present) is a sentence then 
 %%   Q = [does], NP, VP(infinitive) is a corresponding question.
 
-xQ(Tense) --> xHelper(Tense), xNP, xVP(inf).
+xQ(Tense) --> xHelper(Tense), xNP(Tense), xVP(inf).
 
 %% Try:  xQ(present, Q, []). <--- don't forget the diff lists!
 

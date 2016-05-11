@@ -11,7 +11,7 @@ xS(Tense, Num, Person) --> xNP(Tense, Num, Person), xVP(Tense, Num, Person).
 
 xNP(Tense, Num, Person) --> xPropNoun(Tense, Num, Person).
 xNP(Tense, Num, Person) --> xDet(Tense, Num, Person), xNoun(Tense, Num, Person).
-%xNP(Tense, Num, Person) --> xPronoun(Tense, Num, Person).
+xNP(Tense, Num, Person) --> xPronoun(Tense, Num, Person).
 
 %%  Building verb phrases using a Tense variable to ensure that
 %%  the tenses of the parts match the tense of the whole.
@@ -79,6 +79,7 @@ xPropNoun(_, plural, third) --> [luke, hunsbergers].
 xPropNoun(_, singular, third) --> [barack, hussein, obama].
 xPropNoun(_, plural, third) --> [barack, hussein, obamas].
 
+xPronoun(_, _, second) --> [you].
 
 %% Some more words...
 
@@ -90,7 +91,7 @@ xPrep --> [from].
 
 % xIVerb(inf) --> [run].
 xIVerb(present, singular, third) --> [runs].
-xIVerb(present, plural, third) --> [run].
+xIVerb(present, plural, _) --> [run].
 xIVerb(past, _, third) --> [ran].
 
 % xTVerb(inf) --> [trip].

@@ -1,0 +1,178 @@
+%%  Sentence is a noun phrase followed by a verb phrase.
+%%   NOTE:  xS, xNP and xVP are all PREDICATES.
+%%          (Each has two hidden arguments.) 
+
+xS --> xNP, xVP.
+
+%% Building noun phrases...
+
+xNP --> xPropNoun.
+xNP --> xDet, xNoun.
+
+%% Some words...
+
+xDet --> [a].
+xDet --> [the].
+xNoun --> [boy].
+xNoun --> [girl].
+xPropNoun --> [luke, hunsberger].
+xPropNoun --> [barack, hussein, obama].
+
+%% Building verb phrases...
+
+xVP --> xIVerb.
+xVP --> xTVerb, xNP.
+xVP --> xIVerb, xIObj.
+xIObj --> xPrep, xNP.
+
+%% Some more words...
+
+xIVerb --> [runs].
+xPrep --> [to].
+xPrep --> [from].
+xTVerb --> [trips].
+
+%% Try this query:  xS(Ss,[]) <------ i.e., Ss is the list of words
+%%                                    [] is the rest of the words...
+
+%% Or, better yet, define a wrapper predicate:
+
+%% xxxx(Ss) -- holds if Ss is a sentence accepted by the above grammar
+
+xxxx(Ss) :- xS(Ss,[]).  %% <--- Notice that we are supplying the
+                        %%      two (usually hidden) inputs to xS.
+			%%      Must do this when using standard Prolog
+			%%      syntax (i.e., :- )
+
+%% Try this query:  xxxx([A,B,C,D]).
+
+
+%% =======================================================
+%%  Adding extra arguments to the predicates
+%% =======================================================
+%%  For example, below we add an extra TENSE argument.
+%%  The Tense variable can have values such as present,
+%%  past, infinitive, etc.
+
+%%  A sentence is formed by a noun phrase followed by a verb phrase.
+%%  The tense of the verb phrase must be the same as the tense of
+%%  the sentence.
+
+xS(Tense) --> xNP, xVP(Tense).
+
+%%  In the above, Tense is the *first* arugment of the "xS" predicate.
+%%  The two hidden arguments are the *second* and *third* arguments.
+
+%%  Building verb phrases using a Tense variable to ensure that
+%%  the tenses of the parts match the tense of the whole.
+
+xVP(Tense) --> xIVerb(Tense).
+xVP(Tense) --> xTVerb(Tense), xNP.
+xVP(Tense) --> xIVerb(Tense), xIObj.
+
+%%  Individual words.  Here, the tense of a given word is
+%%  specified by a constant (e.g., past or present).
+
+xIVerb(present) --> [runs].
+xIVerb(inf) --> [run].
+xIVerb(past) --> [ran].
+xTVerb(present) --> [trips].
+xTVerb(inf) --> [trip].
+xTVerb(past) --> [tripped].
+
+%%  xHelper:  holds for the helper verbs "does", "did", etc.
+
+xHelper(present) --> [does].
+xHelper(past) --> [did].
+
+
+%%  Forming questions from a sentence...
+%%  If S(present) = NP, VP(present) is a sentence then 
+%%   Q = [does], NP, VP(infinitive) is a corresponding question.
+
+xQ(Tense) --> xHelper(Tense), xNP, xVP(inf).
+
+%% Try:  xQ(present, Q, []). <--- don't forget the diff lists!
+
+%% Or, better yet, define a wrapper predicate:
+%%  xQQQ(Ss) holds if Ss is a question accepted by the above grammar.
+%%  Notice that xQ is given its three arguments:  the 
+%%  Tense argument followed by the two (normally hidden) arguments
+%%  representing the big and little parts of a difference list:
+
+xQQQ(Ss,Tense) :- xQ(Tense, Ss, []). 
+
+%%  Try this query:  xQQQ([A,B,C,D,E],past).  <--- arbitrary five-word 
+%%                                                 question in past tense.
+
+
+%% ==========================
+%%  Generating parse trees
+%% ==========================
+%%  Below, we include an extra argument representing a parse tree.
+%%  Parse trees are represented by FUNCTIONAL terms, using the
+%%  functional symbols, s, np, vp, and so on.
+
+yS(s(NPTree,VPTree)) --> yNP(NPTree), yVP(VPTree).
+
+yNP(np(propNoun(Word))) --> yPropNoun(Word).
+yVP(vp(iVerb(Word))) --> yIVerb(Word).
+
+yVP(vp(tVerb(Word),NPTree)) --> yTVerb(Word), yNP(NPTree).
+
+%% Some individual words:
+
+yPropNoun(luke) --> [luke].
+yIVerb(runs) --> [runs].
+yTVerb(congratulates) --> [congratulates].
+
+%% Try this query:  yS(Tree, Ss, []).
+
+%% Or, define a wrapper predicate:
+
+yyyyS(Ss,Tree) :- yS(Tree, Ss, []).
+
+%% Try this query:  yyyyS([A,B,C], Tree).
+
+%% Or:  yyyyS([luke,congratulates,luke],Tree).
+
+
+%%  app(DL1, DL2, DL3)  
+%% ------------------------------------------------------
+%%  NOTE:  DL1, DL2 and DL3 are difference lists.
+%%    Holds if DL3 represents the same list as the concatenation
+%%    of DL1 and DL2.  only works if the little part of DL1 is
+%%    the same as the big part of DL2.
+
+
+appDL(Xs/Ys, Ys/Zs, Xs/Zs).
+
+%%  appendDL(DL1, DL2, DL3) 
+%% -------------------------------------------------------
+%%  Same as app, except difference lists are represented
+%%  using the "dl" function symbol.
+
+appendDL(dl(Xs,Ys), dl(Ys,Zs), dl(Xs,Zs)).
+
+
+%%  reverseDL(Listy,DiffListy)
+%% ------------------------------------------------------
+%%  Listy is an ordinary list; DiffListy is a difference list.
+%%  reverseDL(Listy,DiffListy) holds if DiffListy represents the
+%%  reversal of Listy.
+
+%%  Base Case:  Listy is empty
+
+reverseDL([], Xs/Xs).  %% Note:  Xs/Xs represents the empty list!
+
+%%  Recursive Case:  Listy has at least one element
+%%    Notice that the first element of Listy gets consed onto
+%%    the little part of DiffListy.  Thus, the little part of
+%%    DiffListy is acting like an accumulator.
+
+%%  Example:  reverseDL([1|2,3,4], [4,3,2,1,a,b]/[a,b]) 
+%%                 :- reverseDL([2,3,4],[4,3,2,1,a,b]/[1,a,b]).
+
+reverseDL([X|Xs], Ys/Zs) :- reverseDL(Xs, Ys/[X|Zs]).
+
+reverseo(Listy, RevListy) :- reverseDL(Listy, RevListy/[]).

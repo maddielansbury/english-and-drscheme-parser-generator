@@ -1,154 +1,129 @@
-%%  diffListConvert(Xs,Ys,Regular)
-%% ---------------------------------------
-%%    holds if Xs/Ys is a difference list
-%%    representation of Regular
+%%  Sentence is a noun phrase followed by a verb phrase.
+%%   NOTE:  xS, xNP and xVP are all PREDICATES.
+%%          (Each has two hidden arguments.) 
 
-%%  Base Case: empty list
+% xS --> xNP, xVP.
 
-diffListConvert(Ys,Ys,[]).
+%% Building noun phrases...
 
-%%  Recursive Case:  non-empty list
+% xNP --> xPropNoun.
+% xNP --> xDet, xNoun.
 
-diffListConvert([X|Big], Little, [X|Regular])
-  :- diffListConvert(Big,Little,Regular).
+xNP(Tense) --> xPropNoun(Tense).
+xNP(Tense) --> xDet(Tense), xNoun(Tense).
 
-%%  isLetter
-%% ----------------------------
-%%  INPUT:  C, a number
-%% ----------------------------
-%%  isLetter(C) holds if C is an ASCII code for a letter 
-%%  (either from 'a' to 'z', or from 'A' to 'Z').
-%%  NOTE:  =< and >= work well on ASCII codes (i.e., numbers).
+%% Some words...
 
-%%  Case 1:  C is the code for a lower-case letter
-isLetter(C) :-  
-  char_code(a,Ca),
-  char_code(z,Cz),
-  C >= Ca,
-  C =< Cz.
+xDet(presentS) --> [a].
+xDet(presentS) --> [the].
+xDet(presentP) --> [some].
+xDet(presentP) --> [the].
+xDet(pastS) --> [a].
+xDet(pastS) --> [the].
+xDet(pastP) --> [some].
+xDet(pastP) --> [the].
 
-%%  Case 2:  C is the code for an upper-case letter
-isLetter(C) :-
-  char_code('A',CA),
-  char_code('Z',CZ),
-  C >= CA,
-  C =< CZ.
+xNoun(presentS) --> [boy].
+xNoun(presentP) --> [boys].
+xNoun(pastS) --> [boy].
+xNoun(pastP) --> [boys].
 
-%%  isNumeral
-%% ----------------------------
-%%  INPUT:  C, a number
-%% ----------------------------
-%%  isLetter(C) holds if C is an ASCII code for a numeral 
-%%  (from '0' to '9').
+xNoun(presentS) --> [girl].
+xNoun(presentP) --> [girls].
+xNoun(pastS) --> [girl].
+xNoun(pastP) --> [girls].
 
-isNumeral(C) :-  
-  char_code('0',Cz),
-  char_code('9',Cn),
-  C >= Cz,
-  C =< Cn.
+xPropNoun(presentS) --> [luke, hunsberger].
+xPropNoun(presentP) --> [barack, hussein, obamas].
+xPropNoun(pastS) --> [luke, hunsberger].
+xPropNoun(pastP) --> [barack, hussein, obamas].
 
 
-%%  dl_string_to_number(Big,Little,Numby).
-%% -----------------------------------------------------
-%%  Holds if the Difference List Big/Little is a String
-%%  representation of the Prolog number Numby.
+%% Building verb phrases...
 
-dl_string_to_number(Big,Little,Numby) 
-  :- diffListConvert(Big,Little,Listy),
-     number_codes(Numby,Listy).
+% xVP --> xIVerb.
+% xVP --> xTVerb, xNP.
+% xVP --> xIVerb, xIObj.
+xIObj --> xPrep, xNP.
 
+%% Some more words...
 
-%%  dl_string_to_atom(Big,Little,Adam).
-%% -----------------------------------------------------
-%%  Holds if the Difference List Big/Little is a String
-%%  representation of the Prolog atom Adam.
+xIVerb --> [runs].
+xPrep --> [to].
+xPrep --> [from].
+xTVerb --> [trips].
 
-dl_string_to_atom(Big,Little,Adam)
-  :- diffListConvert(Big,Little,Listy),
-     atom_codes(Adam,Listy).
+%% Try this query:  xS(Ss,[]) <------ i.e., Ss is the list of words
+%%                                    [] is the rest of the words...
 
-%%---------------------------------------------------------------
+%% Or, better yet, define a wrapper predicate:
 
-scheme --> bool.
-scheme --> num.
-scheme --> id.
-scheme --> null.
+%% xxxx(Ss) -- holds if Ss is a sentence accepted by the above grammar
 
-valid --> scheme, whitespace.
-valid --> scheme, ")".
-valid --> whitespace, valid.
+xxxx(Ss) :- xS(Ss,[]).  %% <--- Notice that we are supplying the
+                        %%      two (usually hidden) inputs to xS.
+			%%      Must do this when using standard Prolog
+			%%      syntax (i.e., :- )
 
-expr --> valid.
-expr --> valid, expr.
-
-whitespace --> " ".
-whitespace --> " ", whitespace.
-
-true --> "#t".
-false --> "#f".
-bool --> true.
-bool --> false.
-
-trueParse(true,Xs,Ys) :-
-  true(Xs,Ys).
-falseParse(false,Xs,Ys) :-
-  false(Xs,Ys).
-boolParse(bool(Boolean),Xs,Ys) :-
-  false(Xs,Ys),
-  falseParse(Boolean,Xs,Ys).
-boolParse(bool(Boolean),Xs,Ys) :-
-  true(Xs,Ys),
-  trueParse(Boolean,Xs,Ys).
+%% Try this query:  xxxx([A,B,C,D]).
 
 
-numOne --> [N], {isNumeral(N)}.
-num --> numOne.
-num --> numOne, num.
+%% =======================================================
+%%  Adding extra arguments to the predicates
+%% =======================================================
+%%  For example, below we add an extra TENSE argument.
+%%  The Tense variable can have values such as present,
+%%  past, infinitive, etc.
 
-numParse(num(Atnum),Xs,Ys) :-
-  num(Xs,Ys),
-  dl_string_to_number(Xs,Ys,Atnum).
+%%  A sentence is formed by a noun phrase followed by a verb phrase.
+%%  The tense of the verb phrase must be the same as the tense of
+%%  the sentence.
+
+%xS(Tense) --> xNP, xVP(Tense).
+xS(Tense) --> xNP(Tense), xVP(Tense).
 
 
-idOne --> [L], {isLetter(L)}.
-id --> idOne.
-id --> idOne, id.
+%%  In the above, Tense is the *first* arugment of the "xS" predicate.
+%%  The two hidden arguments are the *second* and *third* arguments.
 
-idParse(id(Atid),Xs,Ys) :-
-  id(Xs,Ys),
-  dl_string_to_atom(Xs,Ys,Atid).
+%%  Building verb phrases using a Tense variable to ensure that
+%%  the tenses of the parts match the tense of the whole.
 
-listSingle --> "(", scheme, ")".
+xVP(Tense) --> xIVerb(Tense).
+xVP(Tense) --> xTVerb(Tense), xNP.
+xVP(Tense) --> xIVerb(Tense), xIObj.
 
-listContents(Contents,Xs,Ys) :-
-  diffListConvert(Xs,Ys,[40|Rest]),
-  diffListConvert(Rest,Contents,")").
+%%  Individual words.  Here, the tense of a given word is
+%%  specified by a constant (e.g., past or present).
 
-listSingleParse(cons(Item,null), Xs, Ys) :-
-  listSingle(Xs,Ys),
-  listContents(Contents,Xs,Ys),
-  allParse(Item,Contents,"").
+xIVerb(presentS) --> [runs].
+xIVerb(inf) --> [run].
+xIVerb(pastS) --> [ran].
+xTVerb(presentS) --> [trips].
+xTVerb(inf) --> [trip].
+xTVerb(pastS) --> [tripped].
 
-null --> "()".
-nullParse(null,Xs,Ys) :-
-  null(Xs,Ys).
+%%  xHelper:  holds for the helper verbs "does", "did", etc.
 
-allParse(P, Xs, Ys) :-
-  bool(Xs,Ys),
-  boolParse(P,Xs,Ys).
+xHelper(presentS) --> [does].
+xHelper(pastS) --> [did].
 
-allParse(P, Xs, Ys) :-
-  null(Xs,Ys),
-  nullParse(P,Xs,Ys).
 
-allParse(P, Xs, Ys) :-
-  id(Xs,Ys),
-  idParse(P,Xs,Ys).
-  
-allParse(P, Xs, Ys) :-
-  num(Xs,Ys),
-  numParse(P,Xs,Ys).
-  
-allParse(P, Xs, Ys) :-
-  listSingle(Xs,Ys),
-  listParse(P,Xs,Ys).
+%%  Forming questions from a sentence...
+%%  If S(present) = NP, VP(present) is a sentence then 
+%%   Q = [does], NP, VP(infinitive) is a corresponding question.
+
+xQ(Tense) --> xHelper(Tense), xNP, xVP(inf).
+
+%% Try:  xQ(present, Q, []). <--- don't forget the diff lists!
+
+%% Or, better yet, define a wrapper predicate:
+%%  xQQQ(Ss) holds if Ss is a question accepted by the above grammar.
+%%  Notice that xQ is given its three arguments:  the 
+%%  Tense argument followed by the two (normally hidden) arguments
+%%  representing the big and little parts of a difference list:
+
+xQQQ(Ss,Tense) :- xQ(Tense, Ss, []). 
+
+%%  Try this query:  xQQQ([A,B,C,D,E],past).  <--- arbitrary five-word 
+%%                                                 question in past tense.

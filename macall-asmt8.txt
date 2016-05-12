@@ -39,11 +39,11 @@ xInfVP(tran) --> xInfVerb(tran), xObjPronoun.
 
 xAP --> [].
 xAP --> xAdj.
-xAP --> xAdv, xAdj.
+xAP --> xAdv(adj), xAdj.
 xAP --> xAdj, xAdj.
 
 xAdvP --> [].
-xAdvP --> xAdv.
+xAdvP --> xAdv(verb).
 
 xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xInfVP(_).
 
@@ -100,6 +100,22 @@ xIVerb(present, singular, first) --> [run].
 xIVerb(present, plural, _) --> [run].
 xIVerb(past, _, _) --> [ran].
 
+% -------------TO--BE--VERBS----------------
+
+xTVerb(present, singular, first) --> [am].
+xTVerb(present, singular, second) --> [are].
+xTVerb(present, singular, third) --> [is].
+
+xTVerb(present, plural, _) --> [are].
+
+xTVerb(past, singular, first) --> [was].
+xTVerb(past, singular, second) --> [were].
+xTVerb(past, singular, third) --> [was].
+
+xTVerb(past, plural, _) --> [was].
+
+% ------------------------------------------
+
 xTVerb(present, singular, third) --> [hugs].
 xTVerb(present, singular, first) --> [hug].
 xTVerb(present, singular, second) --> [hug].
@@ -121,7 +137,9 @@ xAdj --> [cute].
 %xAdj --> [funny].
 %xAdj --> [stupid].
 
-xAdv --> [elegantly].
+xAdv(verb) --> [quickly].
+xAdv(adj) --> [very].
+xAdv(_) --> [gracefully].
 
 %% xS(D, E, F, G, []). how to generate a random sentence
 %% xS(present, plural, second, A, []). how to get a specific type of sentence

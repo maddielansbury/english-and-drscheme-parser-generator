@@ -100,6 +100,22 @@ xIVerb(present, singular, first) --> [run].
 xIVerb(present, plural, _) --> [run].
 xIVerb(past, _, _) --> [ran].
 
+% -------------TO--BE--VERBS----------------
+
+xTVerb(present, singular, first) --> [am].
+xTVerb(present, singular, second) --> [are].
+xTVerb(present, singular, third) --> [is].
+
+xTVerb(present, plural, _) --> [are].
+
+xTVerb(past, singular, first) --> [was].
+xTVerb(past, singular, second) --> [were].
+xTVerb(past, singular, third) --> [was].
+
+xTVerb(past, plural, _) --> [was].
+
+% ------------------------------------------
+
 xTVerb(present, singular, third) --> [hugs].
 xTVerb(present, singular, first) --> [hug].
 xTVerb(present, singular, second) --> [hug].

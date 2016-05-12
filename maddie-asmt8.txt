@@ -2,7 +2,12 @@
 %%  The tense of the verb phrase must be the same as the tense of
 %%  the sentence.
 
-xS(Tense, Num, Person) --> xNP(Tense, Num, Person), xVP(Tense, Num, Person).
+xS(Tense, Num, Person) --> xD(Tense, Num, Person).
+xS(Tense, Num, Person) --> xQ(Tense, Num, Person).
+xS(_, _, _) --> xI.
+
+
+xD(Tense, Num, Person) --> xNP(Tense, Num, Person), xVP(Tense, Num, Person).
 
 xNP(Tense, Num, Person) --> xAP, xPropNoun(Tense, Num, Person).
 xNP(Tense, Num, Person) --> xDet(Tense, Num, Person), xAP, xNoun(Tense, Num, Person).
@@ -12,30 +17,35 @@ xIObj(Tense, Num, Person) --> xPrep, xAP, xPropNoun(Tense, Num, Person).
 xIObj(Tense, Num, Person) --> xPrep, xDet(Tense, Num, Person), xAP, xNoun(Tense, Num, Person).
 xIObj(_, _, _) --> xPrep, xObjPronoun.
 
-xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person).
-xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj(_, _, _).
+xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xAdvP.
+xVP(Tense, Num, Person) --> xAdvP, xIVerb(Tense, Num, Person).
+xVP(Tense, Num, Person) --> xAdvP, xIVerb(Tense, Num, Person), xIObj(_, _, _).
 
 xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2).
 xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xAP, xPropNoun(_, _, _).
 xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xObjPronoun.
 
 
-xIVP(intran) --> xInfVerb(intran).
-xIVP(intran) --> xInfVerb(intran), xIObj(_, _, _).
+xInfVP(intran) --> xInfVerb(intran).
+xInfVP(intran) --> xInfVerb(intran), xIObj(_, _, _).
 
-xIVP(tran) --> xInfVerb(tran), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2).
-xIVP(tran) --> xInfVerb(tran), xAP, xPropNoun(_, _, _).
-xIVP(tran) --> xInfVerb(tran), xObjPronoun.
+xInfVP(tran) --> xInfVerb(tran), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2).
+xInfVP(tran) --> xInfVerb(tran), xAP, xPropNoun(_, _, _).
+xInfVP(tran) --> xInfVerb(tran), xObjPronoun.
 
 
 xAP --> [].
-xAP --> xAdj.
+xAP --> xAdv(adj), xAdj.
 xAP --> xAdj, xAdj.
 
+xAdvP --> [].
+xAdvP --> xAdv(verb).
 
 
-xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xIVP(_).
+xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xInfVP(_).
 
+
+xI --> xInfVP(_).
 
 
 %%------------------------------------------------------------------------------------------
@@ -89,14 +99,14 @@ xIVerb(present, singular, first) --> [run].
 xIVerb(present, plural, _) --> [run].
 xIVerb(past, _, _) --> [ran].
 
-xTVerb(present, singular, third) --> [trips].
-xTVerb(present, singular, first) --> [trip].
-xTVerb(present, singular, second) --> [trip].
-xTVerb(present, plural, _) --> [trip].
-xTVerb(past, _, _) --> [tripped].
+xTVerb(present, singular, third) --> [hugs].
+xTVerb(present, singular, first) --> [hug].
+xTVerb(present, singular, second) --> [hug].
+xTVerb(present, plural, _) --> [hug].
+xTVerb(past, _, _) --> [hugged].
 
 xInfVerb(intran) --> [run].
-xInfVerb(tran) --> [trip].
+xInfVerb(tran) --> [hug].
 
 %%  xHelper:  holds for the helper verbs "does", "did", etc.
 
@@ -107,10 +117,14 @@ xHelper(present, plural, _) --> [do].
 xHelper(past, _, _) --> [did].
 
 
-
 xAdj --> [cute].
 %xAdj --> [funny].
 %xAdj --> [stupid].
+
+
+xAdv(verb) --> [quickly].
+xAdv(adj) --> [very].
+xAdv(_) --> [gracefully].
 
 
 %% xS(D, E, F, G, []). how to generate a random sentence

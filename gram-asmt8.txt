@@ -39,11 +39,11 @@ xInfVP(tran) --> xInfVerb(tran), xObjPronoun.
 
 xAP --> [].
 xAP --> xAdj.
-xAP --> xAdv, xAdj.
+xAP --> xAdv(adj), xAdj.
 xAP --> xAdj, xAdj.
 
 xAdvP --> [].
-xAdvP --> xAdv.
+xAdvP --> xAdv(verb).
 
 xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xInfVP(_).
 
@@ -121,7 +121,9 @@ xAdj --> [cute].
 %xAdj --> [funny].
 %xAdj --> [stupid].
 
-xAdv --> [elegantly].
+xAdv(verb) --> [quickly].
+xAdv(adj) --> [very].
+xAdv(_) --> [gracefully].
 
 %% xS(D, E, F, G, []). how to generate a random sentence
 %% xS(present, plural, second, A, []). how to get a specific type of sentence

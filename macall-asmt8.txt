@@ -16,9 +16,15 @@ xNP(Tense, Num, Person) --> xPronoun(Tense, Num, Person).
 %%  Building verb phrases using a Tense variable to ensure that
 %%  the tenses of the parts match the tense of the whole.
 
-xIObj(Tense, Num, Person) --> xPrep, xNP(Tense, Num, Person).
+xIObj(Tense, Num, Person) --> xPrep, xPropNoun(Tense, Num, Person).
+xIObj(Tense, Num, Person) --> xPrep, xDet(Tense, Num, Person), xNoun(Tense, Num, Person).
+
 xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person).
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xNP(Tense, Num, Person).
+
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense, Num, Person), xNoun(Tense, Num, Person).
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xPropNoun(Tense, Num, Person).
+
+
 xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj(Tense, Num, Person).
 
 %%--------------------------------------------------------------------------
@@ -58,8 +64,6 @@ xQQQ(Ss,Tense, Num, Person) :- xQ(Tense, Num, Person, Ss, []).
 %%  Try this query:  xQQQ([A,B,C,D,E],past).  <--- arbitrary five-word 
 %%                                                 question in past tense.
 
-%% xS(D, E, F, G, []). how to generate a random sentence
-
 %%--------------------------------------------------------------------------
 
 %% Some words...
@@ -68,18 +72,21 @@ xDet(_, singular, third) --> [a].
 xDet(_, _, third) --> [the].
 xDet(_, plural, third) --> [some].
 
-xNoun(_, singular, third) --> [boy].
-xNoun(_, plural, third) --> [boys].
+xNoun(_, singular, third) --> [woman].
+xNoun(_, plural, third) --> [women].
 
-xNoun(_, singular, third) --> [girl].
-xNoun(_, plural, third) --> [girls].
+xNoun(_, singular, third) --> [man].
+xNoun(_, plural, third) --> [men].
 
-xPropNoun(_, singular, third) --> [luke, hunsberger].
-xPropNoun(_, plural, third) --> [luke, hunsbergers].
-xPropNoun(_, singular, third) --> [barack, hussein, obama].
-xPropNoun(_, plural, third) --> [barack, hussein, obamas].
+xPropNoun(_, singular, third) --> [april, ludgate].
+xPropNoun(_, singular, third) --> [andy, dwyer].
 
 xPronoun(_, _, second) --> [you].
+xPronoun(_, singular, first) --> [i].
+xPronoun(_, plural, first) --> [we].
+xPronoun(_, plural, third) --> [they].
+xPronoun(_, singular, third) --> [she].
+xPronoun(_, singular, third) --> [he].
 
 %% Some more words...
 
@@ -91,17 +98,24 @@ xPrep --> [from].
 
 % xIVerb(inf) --> [run].
 xIVerb(present, singular, third) --> [runs].
+xIVerb(present, singular, first) --> [run].
 xIVerb(present, plural, _) --> [run].
-xIVerb(past, _, third) --> [ran].
+xIVerb(past, _, _) --> [ran].
 
 % xTVerb(inf) --> [trip].
 xTVerb(present, singular, third) --> [trips].
-xTVerb(present, plural, third) --> [trip].
-xTVerb(past, _, third) --> [tripped].
+xTVerb(present, singular, first) --> [trip].
+xTVerb(present, singular, second) --> [trip].
+xTVerb(present, plural, _) --> [trip].
+xTVerb(past, _, _) --> [tripped].
 
 %%  xHelper:  holds for the helper verbs "does", "did", etc.
 
-xHelper(presentS) --> [does].
-xHelper(presentP) --> [do].
-xHelper(pastS) --> [did].
-xHelper(pastP) --> [did].
+xHelper(present, singular, third) --> [does].
+xHelper(present, singular, second) --> [do].
+xHelper(present, singular, first) --> [do].
+xHelper(present, plural, _) --> [do].
+xHelper(past, _, _) --> [did].
+
+%% xS(D, E, F, G, []). how to generate a random sentence
+%% xS(present, plural, second, A, []). how to get a specific type of sentence

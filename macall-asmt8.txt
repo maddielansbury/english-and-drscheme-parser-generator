@@ -95,6 +95,13 @@ xPronoun(_, plural, third) --> [they].
 xPronoun(_, singular, third) --> [she].
 xPronoun(_, singular, third) --> [he].
 
+xPronoun(_, _, second) --> [you].
+xPronoun(_, singular, first) --> [i].
+xPronoun(_, plural, first) --> [we].
+xPronoun(_, plural, third) --> [they].
+xPronoun(_, singular, third) --> [she].
+xPronoun(_, singular, third) --> [he].
+
 %% Some more words...
 
 xPrep --> [to].

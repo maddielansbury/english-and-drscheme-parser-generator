@@ -18,13 +18,15 @@ xNP(Tense, Num, Person) --> xPronoun(Tense, Num, Person).
 
 xIObj(Tense, Num, Person) --> xPrep, xPropNoun(Tense, Num, Person).
 xIObj(Tense, Num, Person) --> xPrep, xDet(Tense, Num, Person), xNoun(Tense, Num, Person).
-xIObj --> xPrep, xPronoun.
+xIObj --> xPrep, xObjPronoun.
 
 
 xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person).
 
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense, Num, Person), xNoun.
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense2, Num2, Person2), xNoun(Tense2, Num2, Person2).
 xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xPropNoun.
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xObjPronoun.
+
 
 xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj(Tense, Num, Person).
 xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj.
@@ -103,11 +105,12 @@ xPronoun(_, singular, third) --> [he].
 
 % Indirect object pronouns:
 
-xPronoun --> [us].
-xPronoun --> [me].
-xPronoun --> [him].
-xPronoun --> [her].
-xPronoun --> [them].
+xObjPronoun --> [us].
+xObjPronoun --> [me].
+xObjPronoun --> [him].
+xObjPronoun --> [her].
+xObjPronoun --> [them].
+xObjPronoun --> [you].
 
 %% Some more words...
 

@@ -2,97 +2,71 @@
 %%  The tense of the verb phrase must be the same as the tense of
 %%  the sentence.
 
-xS(Tense, Num, Person) --> xNP(Tense, Num, Person), xVP(Tense, Num, Person).
+xS(Tense, Num, Person) --> xD(Tense, Num, Person).
+xS(Tense, Num, Person) --> xQ(Tense, Num, Person).
+xS(Tense, Num, Person) --> xI(Tense, Num, Person).
 
-%%  In the above, Tense is the *first* arugment of the "xS" predicate.
-%%  The two hidden arguments are the *second* and *third* arguments.
+xD(Tense, Num, Person) --> xNP(Tense, Num, Person), xVP(Tense, Num, Person).
 
-%% Building noun phrases...
-
-xNP(Tense, Num, Person) --> xPropNoun(Tense, Num, Person).
-xNP(Tense, Num, Person) --> xDet(Tense, Num, Person), xNoun(Tense, Num, Person).
+xNP(Tense, Num, Person) --> xAP, xPropNoun(Tense, Num, Person).
+xNP(Tense, Num, Person) --> xDet(Tense, Num, Person), xAP, xNoun(Tense, Num, Person).
 xNP(Tense, Num, Person) --> xPronoun(Tense, Num, Person).
 
-%%  Building verb phrases using a Tense variable to ensure that
-%%  the tenses of the parts match the tense of the whole.
+xIObj(Tense, Num, Person) --> xPrep, xAP, xPropNoun(Tense, Num, Person).
+xIObj(Tense, Num, Person) --> xPrep, xDet(Tense, Num, Person), xAP, xNoun(Tense, Num, Person).
+xIObj(_, _, _) --> xPrep, xObjPronoun.
 
-xIObj(Tense, Num, Person) --> xPrep, xPropNoun(Tense, Num, Person).
-xIObj(Tense, Num, Person) --> xPrep, xDet(Tense, Num, Person), xNoun(Tense, Num, Person).
-xIObj --> xPrep, xObjPronoun.
+xVP(Tense, Num, Person) --> xAdvP, xIVerb(Tense, Num, Person).
+xVP(Tense, Num, Person) --> xAdvP, xIVerb(Tense, Num, Person), xIObj(_, _, _).
 
+xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xAdvP.
+xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xAdvP, xIObj(_, _, _).
 
-xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person).
+xVP(Tense, Num, Person) --> xAdvP, xTVerb(Tense, Num, Person), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2).
+xVP(Tense, Num, Person) --> xAdvP, xTVerb(Tense, Num, Person), xAP, xPropNoun(_, _, _).
+xVP(Tense, Num, Person) --> xAdvP, xTVerb(Tense, Num, Person), xObjPronoun.
 
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense2, Num2, Person2), xNoun(Tense2, Num2, Person2).
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xPropNoun.
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xObjPronoun.
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2), xAdvP. 
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xAP, xPropNoun(_, _, _), xAdvP.
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xObjPronoun, xAdvP.
 
+xInfVP(intran) --> xInfVerb(intran).
+xInfVP(intran) --> xInfVerb(intran), xIObj(_, _, _).
 
-xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj(Tense, Num, Person).
-xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj.
+xInfVP(tran) --> xInfVerb(tran), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2).
+xInfVP(tran) --> xInfVerb(tran), xAP, xPropNoun(_, _, _).
+xInfVP(tran) --> xInfVerb(tran), xObjPronoun.
 
+xAP --> [].
+xAP --> xAdj.
+xAP --> xAdv, xAdj.
+xAP --> xAdj, xAdj.
 
-%%--------------------------------------------------------------------------
+xAdvP --> [].
+xAdvP --> xAdv.
 
-%% Try this query:  xS(Ss,[]) <------ i.e., Ss is the list of words
-%%                                    [] is the rest of the words...
+xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xInfVP(_).
 
-%% Or, better yet, define a wrapper predicate:
+xI(_,_,_) --> xInfVP(_).
 
-%% xxxx(Ss) -- holds if Ss is a sentence accepted by the above grammar
-
-xxxx(Ss) :- xS(Ss,[]).  %% <--- Notice that we are supplying the
-                        %%      two (usually hidden) inputs to xS.
-			%%      Must do this when using standard Prolog
-			%%      syntax (i.e., :- )
-
-%% Try this query:  xxxx([A,B,C,D]).
-
-%%--------------------------------------------------------------------------
-
-%%  Forming questions from a sentence...
-%%  If S(present) = NP, VP(present) is a sentence then 
-%%   Q = [does], NP, VP(infinitive) is a corresponding question.
-
-xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xVP(inf).
-
-%% Try:  xQ(present, Q, []). <--- don't forget the diff lists!
-
-%% Or, better yet, define a wrapper predicate:
-%%  xQQQ(Ss) holds if Ss is a question accepted by the above grammar.
-%%  Notice that xQ is given its three arguments:  the 
-%%  Tense argument followed by the two (normally hidden) arguments
-%%  representing the big and little parts of a difference list:
-
-xQQQ(Ss,Tense, Num, Person) :- xQ(Tense, Num, Person, Ss, []). 
-
-%%  Try this query:  xQQQ([A,B,C,D,E],past).  <--- arbitrary five-word 
-%%                                                 question in past tense.
-
-%%--------------------------------------------------------------------------
+%%------------------------------------------------------------------------------------------
 
 %% Some words...
 
 xDet(_, singular, third) --> [a].
 xDet(_, _, third) --> [the].
 xDet(_, plural, third) --> [some].
-
-xNoun --> [woman].
-xNoun --> [women].
-xNoun --> [man].
-xNoun --> [men].
+xDet(_, plural, third) --> [].
 
 xNoun(_, singular, third) --> [woman].
 xNoun(_, plural, third) --> [women].
 
-xNoun(_, singular, third) --> [man].
-xNoun(_, plural, third) --> [men].
+% xNoun(_, singular, third) --> [man].
+% xNoun(_, plural, third) --> [men].
 
 xPropNoun(_, singular, third) --> [april, ludgate].
-xPropNoun(_, singular, third) --> [andy, dwyer].
-
-xPropNoun --> [april, ludgate].
-xPropNoun --> [andy, dwyer].
+% xPropNoun(_, singular, third) --> [andy, dwyer].
+% xPropNoun(_, singular, third) --> [ron, swanson].
 
 % Subject pronouns
 
@@ -115,23 +89,25 @@ xObjPronoun --> [you].
 %% Some more words...
 
 xPrep --> [to].
-xPrep --> [from].
+%xPrep --> [from].
+%xPrep --> [around].
 
 %%  Individual words.  Here, the tense of a given word is
 %%  specified by a constant (e.g., past or present).
 
-% xIVerb(inf) --> [run].
 xIVerb(present, singular, third) --> [runs].
 xIVerb(present, singular, first) --> [run].
 xIVerb(present, plural, _) --> [run].
 xIVerb(past, _, _) --> [ran].
 
-% xTVerb(inf) --> [trip].
-xTVerb(present, singular, third) --> [trips].
-xTVerb(present, singular, first) --> [trip].
-xTVerb(present, singular, second) --> [trip].
-xTVerb(present, plural, _) --> [trip].
-xTVerb(past, _, _) --> [tripped].
+xTVerb(present, singular, third) --> [hugs].
+xTVerb(present, singular, first) --> [hug].
+xTVerb(present, singular, second) --> [hug].
+xTVerb(present, plural, _) --> [hug].
+xTVerb(past, _, _) --> [hugged].
+
+xInfVerb(intran) --> [run].
+xInfVerb(tran) --> [hug].
 
 %%  xHelper:  holds for the helper verbs "does", "did", etc.
 
@@ -140,6 +116,12 @@ xHelper(present, singular, second) --> [do].
 xHelper(present, singular, first) --> [do].
 xHelper(present, plural, _) --> [do].
 xHelper(past, _, _) --> [did].
+
+xAdj --> [cute].
+%xAdj --> [funny].
+%xAdj --> [stupid].
+
+xAdv --> [elegantly].
 
 %% xS(D, E, F, G, []). how to generate a random sentence
 %% xS(present, plural, second, A, []). how to get a specific type of sentence

@@ -21,9 +21,8 @@ xIObj(Tense, Num, Person) --> xPrep, xDet(Tense, Num, Person), xNoun(Tense, Num,
 
 xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person).
 
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense, Num, Person), xNoun(Tense, Num, Person).
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xPropNoun(Tense, Num, Person).
-
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense, Num, Person), xNoun.
+xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xPropNoun.
 
 xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj(Tense, Num, Person).
 
@@ -72,6 +71,11 @@ xDet(_, singular, third) --> [a].
 xDet(_, _, third) --> [the].
 xDet(_, plural, third) --> [some].
 
+xNoun --> [woman].
+xNoun --> [women].
+xNoun --> [man].
+xNoun --> [men].
+
 xNoun(_, singular, third) --> [woman].
 xNoun(_, plural, third) --> [women].
 
@@ -80,6 +84,9 @@ xNoun(_, plural, third) --> [men].
 
 xPropNoun(_, singular, third) --> [april, ludgate].
 xPropNoun(_, singular, third) --> [andy, dwyer].
+xPropNoun --> [april, ludgate].
+xPropNoun --> [andy, dwyer].
+
 
 xPronoun(_, _, second) --> [you].
 xPronoun(_, singular, first) --> [i].

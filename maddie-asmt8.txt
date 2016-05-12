@@ -13,13 +13,20 @@ xIObj(Tense, Num, Person) --> xPrep, xDet(Tense, Num, Person), xAP, xNoun(Tense,
 xIObj(_, _, _) --> xPrep, xObjPronoun.
 
 xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person).
+xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj(_, _, _).
 
 xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2).
 xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xAP, xPropNoun(_, _, _).
 xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xObjPronoun.
 
 
-xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xIObj(_, _, _).
+xIVP(intran) --> xInfVerb(intran).
+xIVP(intran) --> xInfVerb(intran), xIObj(_, _, _).
+
+xIVP(tran) --> xInfVerb(tran), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2).
+xIVP(tran) --> xInfVerb(tran), xAP, xPropNoun(_, _, _).
+xIVP(tran) --> xInfVerb(tran), xObjPronoun.
+
 
 xAP --> [].
 xAP --> xAdj.
@@ -27,7 +34,7 @@ xAP --> xAdj, xAdj.
 
 
 
-xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xVP(inf, Num, Person).
+xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xIVP(_).
 
 
 
@@ -77,18 +84,19 @@ xPrep --> [to].
 %%  Individual words.  Here, the tense of a given word is
 %%  specified by a constant (e.g., past or present).
 
-xIVerb(inf, _, _) --> [run].
 xIVerb(present, singular, third) --> [runs].
 xIVerb(present, singular, first) --> [run].
 xIVerb(present, plural, _) --> [run].
 xIVerb(past, _, _) --> [ran].
 
-xTVerb(inf, _, _) --> [trip].
 xTVerb(present, singular, third) --> [trips].
 xTVerb(present, singular, first) --> [trip].
 xTVerb(present, singular, second) --> [trip].
 xTVerb(present, plural, _) --> [trip].
 xTVerb(past, _, _) --> [tripped].
+
+xInfVerb(intran) --> [run].
+xInfVerb(tran) --> [trip].
 
 %%  xHelper:  holds for the helper verbs "does", "did", etc.
 

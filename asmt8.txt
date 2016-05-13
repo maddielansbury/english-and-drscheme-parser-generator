@@ -445,17 +445,17 @@ xTBVP(vp(VTree,ATree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers),
 %  An infinitive verb phrase is made up of either...
 %% -------------------------------------------------------------------------- %
 
-%% an infinitive verb (xInfVerb):
+%% an infinitive verb (xInfVerb) and an optional prepositional phrase (xPP):
 %---------------------------------------
 xInfVP(vp(Tree),intran) --> xInfVerb(Tree,intran).
-
-%% an infinitive verb (xInfVerb) and a prepositional phrase (xPP):
-%---------------------------------------
 xInfVP(vp(VTree,PTree),intran) --> xInfVerb(VTree,intran), xPP(PTree).
 
-%% an infinitive verb (xInfVerb) and an object (xObj):
+%% an infinitive verb (xInfVerb), an object (xObj), and an optional
+%%  prepositional phrase (xPP):
 %---------------------------------------
-xInfVP(vp(VTree,OTree),tran) --> xInfVerb(VTree,tran),xObj(OTree).
+xInfVP(vp(VTree,OTree),tran) --> xInfVerb(VTree,tran), xObj(OTree).
+xInfVP(vp(VTree,OTree,PTree),tran) --> xInfVerb(VTree,tran), xObj(OTree),
+                                       xPP(PTree).
 
 %%============================================================================%%
 
@@ -602,6 +602,7 @@ xObjPronoun(p(you)) --> [you].
 %  Prepositions:
 %% -------------------------------------------------------------------------- %
 xPrep(by) --> [by].
+xPrep(near) --> [near].
 xPrep(behind) --> [behind].
 xPrep(around) --> [around].
 

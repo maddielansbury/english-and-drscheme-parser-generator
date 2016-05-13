@@ -1,468 +1,250 @@
+%%=============================%%
+%% CMPU-245, Spring 2016       %
+%% Asmt. 8 - TESTS             %
+%% Macall McQueen &            %
+%% Madeline Lansbury           %
+%%=============================%%
 
-%%============================================================================%%
-%  xs -- a wrapper function for xS.
-%     INPUTS: Tree, a parse tree.
-%             Sent, a sentence represented by a list.
-%  Use xs(Tree, Sent) to generate a sentence (xS) and its parse tree!
-%% -------------------------------------------------------------------------- %
 
-xs(Tree, Sent) :- xS(Tree, Sent, []).
+write('===============================
+  CMPU-245, Spring 2016
+  Asmt. 8 - TESTS
+  Macall McQueen &
+  Madeline Lansbury
+===============================').
 
-%%============================================================================%%
+['asmt8.txt'].
 
+%%------------------------------------------------------------------------------
 
+%=============%%
+%% PROBLEM 1.
+%%%%==============================%
 
-%%====================%%
-%%     SENTENCES      %
-%%====================%%======================================================%%
-%  A sentence is declarative (xD), imperative (xI), or interrogative (xQ).
-%% -------------------------------------------------------------------------- %
+write('\nBOOLEANS:
+===========================').
+write('\nExpression: "#t"').
+exprWrapper(Tree, "#t").
 
-xS(Tree) --> xD(Tree).
-xS(Tree) --> xI(Tree).
-xS(Tree) --> xQ(Tree).
+write('------------------
+\nExpression: "#f"').
+exprWrapper(Tree, "#f").
 
-%%============================================================================%%
 
+write('\nNUMBERS:
+===========================').
+write('\nExpression: "0"').
+exprWrapper(Tree, "0").
 
+write('------------------
+\nExpression: "9"').
+exprWrapper(Tree, "9").
 
-%%====================%%
-%%    DECLARATIVES    %
-%%====================%%======================================================%%
-%  A declarative sentence is made up of either...
-%% -------------------------------------------------------------------------- %
+write('------------------
+\nExpression: "2106"').
+exprWrapper(Tree, "2106").
 
-%% a subject (xSubj) and a verb phrase (xVP):
-%---------------------------------------
-xD(d(STree,VTree)) --> xSubj(STree,Num,Pers),
-                       xVP(VTree,_,Num,Pers).
+write('------------------
+\nExpression: "3452071"').
+exprWrapper(Tree, "3452071").
 
-%% two declarative independent clauses (xDC) separated by a conjunction:
-%---------------------------------------
-xD(d(ATree,CTree,BTree)) --> xDC(ATree), xConj(CTree), xDC(BTree).
-xDC(ic(STree,VTree)) --> xSubj(STree,Num,Pers),
-                         xVP(VTree,_,Num,Pers).
 
-%%============================================================================%%
+write('\nIDENTIFIERS:
+===========================').
+write('\nExpression: "a"').
+exprWrapper(Tree, "a").
 
+write('------------------
+\nExpression: "z"').
+exprWrapper(Tree, "z").
 
+write('------------------
+\nExpression: "not"').
+exprWrapper(Tree, "not").
 
-%%====================%%
-%%    IMPERATIVES     %
-%%====================%%======================================================%%
-%  An imperative sentence is made up of either...
-%% -------------------------------------------------------------------------- %
+write('------------------
+\nExpression: "member"').
+exprWrapper(Tree, "member").
 
-%% one infinitive verb phrase (xInfVP):
-%---------------------------------------
-xI(i(Tree)) --> xInfVP(Tree,_).
 
-%% two imperative independent clauses (xIC) separated by a conjunction:
-%---------------------------------------
-xI(i(ATree,CTree,BTree)) --> xIC(ATree), xConj(CTree), xIC(BTree).
-xIC(ic(Tree))--> xInfVP(Tree,_).
+write('\nEMPTY LIST:
+===========================').
+write('\nExpression: "()"').
+exprWrapper(Tree, "()").
 
-%%============================================================================%%
 
+write('\nNON-EMPTY LISTS:
+===========================').
+write('\nExpression: "(#t)"').
+exprWrapper(Tree, "(#t)").
 
+write('------------------
+\nExpression: "(  356 )"').
+exprWrapper(Tree, "(  356 )").
 
-%%====================%%
-%%   INTERROGATIVES   %
-%%====================%%======================================================%%
-%  An interrogative sentence is made up of a question helper phrase (xQP), a
-%   subject (xSubj), and an infinitive verb phrase (xInfVP).
-%% -------------------------------------------------------------------------- %
+write('------------------
+\nExpression: "( ())"').
+exprWrapper(Tree, "( ())").
 
-xQ(q(QTree,STree,ITree)) --> xQP(QTree,_,Num,Pers),
-                             xSubj(STree,Num,Pers), xInfVP(ITree,_).
+write('------------------
+\nExpression: "(abcd  )"').
+exprWrapper(Tree, "(abcd  )").
 
-%%============================================================================%%
+write('------------------
+\nExpression: "( 2 baa    #t)"').
+exprWrapper(Tree, "( 2 baa    #t)").
 
+write('------------------
+\nExpression: "(  ()      36256 )"').
+exprWrapper(Tree, "(  ()      36256 )").
 
+write('------------------
+\nExpression: "(#f  taaha () 454    jabber   )"').
+exprWrapper(Tree, "(#f  taaha () 454    jabber   )").
 
-%%====================%%
-%%      SUBJECTS      %
-%%====================%%======================================================%%
-%  A subject is made up of either...
-%% -------------------------------------------------------------------------- %
+write('------------------
+\nExpression: "( 5 (cart  bart taaaart    113)  #t abcd  )"').
+exprWrapper(Tree, "( 5 (cart  bart taaaart    113)  #t abcd  )").
 
-%% a noun phrase (xNP):
-%---------------------------------------
-xSubj(Tree,Num,Pers) --> xNP(Tree,Num,Pers).
+write('------------------
+\nExpression: "( (#f)  ( ahahah 42 )  (87 ()))"').
+exprWrapper(Tree, "( (#f)  ( ahahah 42 )  (87 ()))").
 
-%% a subject pronoun (xPronoun):
-%---------------------------------------
-xSubj(Tree,Num,Pers) --> xPronoun(Tree,Num,Pers).
 
-%%============================================================================%%
+write('\nFALSE CASES:
+===========================').
+write('\nExpression: "#a"').
+exprWrapper(Tree, "#a").
 
+write('------------------
+\nExpression: "(("').
+exprWrapper(Tree, "((").
 
+write('------------------
+\nExpression: "a8g6"').
+exprWrapper(Tree, "a8g6").
 
-%%====================%%
-%%   NOUN PHRASES     %
-%%====================%%======================================================%%
-%  A noun phrase is made up of either...
-%% -------------------------------------------------------------------------- %
-
-%% an optional adjective phrase (xAP) and a proper noun (xPropNoun):
-%---------------------------------------
-xNP(np(Tree),Num,Pers) --> xPropNoun(Tree,Num,Pers).
-xNP(np(ATree,NTree),Num,Pers) --> xAP(ATree),
-                                  xPropNoun(NTree,Num,Pers).
-
-%% a determiner (xDet), an optional adjective phrase (xAP), and a noun (xNoun):
-%---------------------------------------
-xNP(np(DTree,ATree,NTree),Num,Pers) --> xDet(DTree,Num,Pers), xAP(ATree),
-                                        xNoun(NTree,Num,Pers).
-xNP(np(DTree,NTree),Num,Pers) --> xDet(DTree,Num,Pers), xNoun(NTree,Num,Pers).
-
-%% Plural nouns do not require determiners.
-%---------------------------------------
-xNP(np(Tree),plural,Pers) --> xNoun(Tree,plural,Pers).
-xNP(np(ATree,NTree),plural,Pers) --> xAP(ATree), xNoun(NTree,plural,Pers).
+write('------------------
+\nExpression: "1 34"').
+exprWrapper(Tree, "1 34").
 
-%%============================================================================%%
+write('------------------
+\nExpression: "bcs 55a n"').
+exprWrapper(Tree, "bcs 55a").
 
+write('------------------
+\nExpression: "(#f#f  )"').
+exprWrapper(Tree, "(#f#f  )").
 
+write('------------------
+\nExpression: "( abc3  fff)"').
+exprWrapper(Tree, "( abc3  fff)").
 
-%%====================%%
-%%    VERB PHRASES    %
-%%====================%%======================================================%%
-%  A standard verb phrase is made up of either...
-%% -------------------------------------------------------------------------- %
+write('------------------
+\nExpression: "( b(k6k) 255  )"').
+exprWrapper(Tree, "( b(k6k) 255  )").
 
-%% An intransitive verb (xIVerb) with an optional adverbial phrase (xAdvP) on
-%%  either side:
-%---------------------------------------
-xVP(vp(Tree),Tens,Num,Pers) --> xIVerb(Tree,Tens,Num,Pers).
-xVP(vp(VTree,ATree),Tens,Num,Pers) --> xIVerb(VTree,Tens,Num,Pers),
-                                       xAdvP(ATree).
-xVP(vp(ATree,VTree),Tens,Num,Pers) --> xAdvP(ATree),
-                                       xIVerb(VTree,Tens,Num,Pers).
+write('------------------
+\nExpression: "(15 #a (abc  3 #t)  )"').
+exprWrapper(Tree, "(15 #a (abc  3 #t)  )").
 
-%% An intransitive verb (xIVerb) with an optional adverbial phrase (xAdvP) on
-%%  either side and a prepositional phrase (xPP):
-%---------------------------------------
-xVP(vp(VTree,PTree),Tens,Num,Pers) --> xIVerb(VTree,Tens,Num,Pers), xPP(PTree).
-xVP(vp(ATree,VTree,PTree),Tens,Num,Pers) --> xAdvP(ATree),
-                                             xIVerb(VTree,Tens,Num,Pers),
-                                             xPP(PTree).
-xVP(vp(VTree,ATree,PTree),Tens,Num,Pers) --> xIVerb(VTree,Tens,Num,Pers),
-                                             xAdvP(ATree), xPP(PTree).
+%%------------------------------------------------------------------------------
 
-%% An optional adverbial phrase (xAdvP), a transitive verb (xTVerb), and an
-%%  object (xObj):
-%---------------------------------------
-xVP(vp(VTree,OTree),Tens,Num,Pers) --> xTVerb(VTree,Tens,Num,Pers), xObj(OTree).
-xVP(vp(ATree,VTree,OTree),Tens,Num,Pers) --> xAdvP(ATree),
-                                             xTVerb(VTree,Tens,Num,Pers),
-                                             xObj(OTree).
 
-%% A "to be" verb (xTBVerb) and an object (xObj):
-%---------------------------------------
-xVP(vp(VTree,OTree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers), xObj(OTree).
 
-%% A "to be" verb (xTBVerb) and an adjective phrase (xAP):
-%---------------------------------------
-xVP(vp(VTree,ATree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers), xAP(ATree).
+%=============%%
+%% PROBLEM 2.
+%%%%==============================%
 
+write('\nDECLARATIVE:
+===========================').
+write('\nSentence: april ludgate runs').
+xs(Tree,[april,ludgate,runs]).
 
-%% -------------------------------------------------------------------------- %
-%  An infinitive verb phrase is made up of either...
-%% -------------------------------------------------------------------------- %
+write('------------------
+\nSentence: i sneeze').
+xs(Tree,[i,sneeze]).
 
-%% An infinitive verb (xInfVerb):
-%---------------------------------------
-xInfVP(vp(Tree),intran) --> xInfVerb(Tree,intran).
+write('------------------
+\nSentence: you hugged ron swanson').
+xs(Tree,[you,hugged,ron,swanson]).
 
-%% An infinitive verb (xInfVerb) and a prepositional phrase (xPP):
-%---------------------------------------
-xInfVP(vp(VTree,PTree),intran) --> xInfVerb(VTree,intran), xPP(PTree).
+write('------------------
+\nSentence: clerks were frowning').
+xs(Tree,[clerks,were,frowning]).
 
-%% An infinitive verb (xInfVerb) and an object (xObj):
-%---------------------------------------
-xInfVP(vp(VTree,OTree),tran) --> xInfVerb(VTree,tran),xObj(OTree).
+write('------------------
+\nSentence: she kissed some woman').
+xs(Tree,[she,kissed,some,woman]).
 
-%%============================================================================%%
+write('------------------
+\nSentence: ben wyatt ran around leslie knope').
+xs(Tree,[ben,wyatt,ran,around,leslie,knope]).
 
+write('------------------
+\nSentence: nurses are helping us behind bureaucrats').
+xs(Tree,[nurses,are,helping,us,behind,bureaucrats]).
 
+write('------------------
+\nSentence: that funny man frowned noisily').
+xs(Tree,[that,funny,man,frowned,noisily]).
 
-%%=======================%%
-%% PREPOSITIONAL PHRASES %
-%%=======================%%===================================================%%
-%  A prepositional phrase is made up of a preposition (xPrep) and an
-%   object (xObj).
-%% -------------------------------------------------------------------------- %
+write('------------------
+\nSentence: a cute cute nurse gracefully sneezed by april ludgate').
+xs(Tree,[a,cute,cute,nurse,gracefully,sneezed,by,april,ludgate]).
 
-xPP(pp(PTree,OTree)) --> xPrep(PTree), xObj(OTree).
+write('------------------
+\nSentence: ron swanson is quite splendid').
+xs(Tree,[ron,swanson,is,quite,splendid]).
 
-%%============================================================================%%
+write('------------------
+\nSentence: we are sneezing rapidly but that dumb nurse helped us').
+xs(Tree,[we,are,sneezing,rapidly,but,that,dumb,nurse,helped,us]).
 
+write('------------------
+\nSentence: those bureaucrats are frowning naturally and they were cute').
+xs(Tree,[those,bureaucrats,are,frowning,naturally,and,they,were,cute]).
 
+write('------------------
+\nSentence: andy dwyer kissed very cute april ludgate so we ran by them').
+xs(Tree,[andy,dwyer,kissed,very,cute,april,ludgate,so,we,ran,by,them]).
 
-%%====================%%
-%%       OBJECTS      %
-%%====================%%======================================================%%
-%  An object is made up of either...
-%% -------------------------------------------------------------------------- %
 
-%% A noun phrase (xNP):
-%---------------------------------------
-xObj(Tree) --> xNP(Tree,_,_).
-
-%% An object pronoun (xObjPronoun):
-%---------------------------------------
-xObj(Tree) --> xObjPronoun(Tree).
-
-%%============================================================================%%
-
-
-
-%%====================%%
-%%  ADJECTIVE PHRASES %
-%%====================%%======================================================%%
-%  An adjective phrase is made up of either...
-%% -------------------------------------------------------------------------- %
-
-%% An optional adverb that modifies an adjective (xAdv) and an
-%%  adjective (xAdj):
-%---------------------------------------
-xAP(ap(Tree)) --> xAdj(Tree).
-xAP(ap(AdvTree,AdjTree)) --> xAdv(AdvTree,adj), xAdj(AdjTree).
-
-%% Two adjectives (xAdj):
-%---------------------------------------
-xAP(ap(ATree1,ATree2)) --> xAdj(ATree1), xAdj(ATree2).
-
-%%============================================================================%%
-
-
-
-%%====================%%
-%%  ADVERBIAL PHRASES %
-%%====================%%======================================================%%
-%  An adverbial phrase is made up of an adverb that can modify a verb.
-%% -------------------------------------------------------------------------- %
-
-xAdvP(Tree) --> xAdv(Tree,verb).
-
-%%============================================================================%%
-
-
-
-%%===========================%%
-%%  QUESTION HELPER PHRASES  %
-%%===========================%%===============================================%%
-%  A question helper phrase is made up of an optional question word (xQW) and
-%   a question helper (xHelper).
-%% -------------------------------------------------------------------------- %
-
-xQP(qhelp(QTree,HTree),Tens,Num,Pers) --> xQW(QTree),
-                                          xHelper(HTree,Tens,Num,Pers).
-xQP(qhelp(Tree),Tens,Num,Pers) --> xHelper(Tree,Tens,Num,Pers).
-
-%%============================================================================%%
-
-
-
-%%====================%%
-%%        WORDS       %
-%%====================%%======================================================%%
-%  Words to use!
-%% -------------------------------------------------------------------------- %
-
-%% -------------------------------------------------------------------------- %
-%  Determiners (number and person specified):
-%% -------------------------------------------------------------------------- %
-xDet(det(a),singular,third) --> [a].
-xDet(det(that),singular,third) --> [that].
-xDet(det(the),_,third) --> [the].
-xDet(det(some),_,third) --> [some].
-xDet(det(many),plural,third) --> [many].
-xDet(det(those),plural,third) --> [those].
-
-%% -------------------------------------------------------------------------- %
-%  Nouns (number and person specified):
-%% -------------------------------------------------------------------------- %
-xNoun(n(woman),singular,third) --> [woman].
-xNoun(n(women),plural,third) --> [women].
-xNoun(n(man),singular,third) --> [man].
-xNoun(n(men),plural,third) --> [men].
-xNoun(n(employee),singular,third) --> [employee].
-xNoun(n(employees),plural,third) --> [employees].
-xNoun(n(intern),singular,third) --> [intern].
-xNoun(n(interns),plural,third) --> [interns].
-xNoun(n(nurse),singular,third) --> [nurse].
-xNoun(n(nurses),plural,third) --> [nurses].
-
-%% -------------------------------------------------------------------------- %
-%  Proper Nouns (number and person specified):
-%% -------------------------------------------------------------------------- %
-xPropNoun(pn(april,ludgate),singular,third) --> [april,ludgate].
-xPropNoun(pn(andy,dwyer),singular,third) --> [andy,dwyer].
-xPropNoun(pn(ron,swanson),singular,third) --> [ron,swanson].
-xPropNoun(pn(leslie,knope),singular,third) --> [leslie,knope].
-xPropNoun(pn(ben,wyatt),singular,third) --> [ben,wyatt].
-
-%% -------------------------------------------------------------------------- %
-%  Subject Pronouns (number and person specified):
-%% -------------------------------------------------------------------------- %
-xPronoun(p(you),_,second) --> [you].
-xPronoun(p(i),singular,first) --> [i].
-xPronoun(p(we),plural,first) --> [we].
-xPronoun(p(they),plural,third) --> [they].
-xPronoun(p(she),singular,third) --> [she].
-xPronoun(p(he),singular,third) --> [he].
-
-%% -------------------------------------------------------------------------- %
-%  Object Pronouns:
-%% -------------------------------------------------------------------------- %
-xObjPronoun(p(us)) --> [us].
-xObjPronoun(p(me)) --> [me].
-xObjPronoun(p(him)) --> [him].
-xObjPronoun(p(her)) --> [her].
-xObjPronoun(p(them)) --> [them].
-xObjPronoun(p(you)) --> [you].
-
-%% -------------------------------------------------------------------------- %
-%  Prepositions:
-%% -------------------------------------------------------------------------- %
-xPrep(by) --> [by].
-xPrep(behind) --> [behind].
-xPrep(around) --> [around].
-
-%% -------------------------------------------------------------------------- %
-%  Verbs (tense, number, and person specified):
-%% -------------------------------------------------------------------------- %
-
-%% "TO BE" VERBS:
-%---------------------------------------
-xTBVerb(am,present,singular,first) --> [am].
-xTBVerb(are,present,singular,second) --> [are].
-xTBVerb(is,present,singular,third) --> [is].
-xTBVerb(are,present,plural,_) --> [are].
-
-xTBVerb(was,past,singular,first) --> [was].
-xTBVerb(were,past,singular,second) --> [were].
-xTBVerb(was,past,singular,third) --> [was].
-xTBVerb(were,past,plural,_) --> [were].
-
-
-%% INTRANSITIVE VERBS:
-%---------------------------------------
-xIVerb(run,present,singular,first) --> [run].
-xIVerb(run,present,singular,second) --> [run].
-xIVerb(runs,present,singular,third) --> [runs].
-xIVerb(run,present,plural,_) --> [run].
-xIVerb(ran,past,_,_) --> [ran].
-
-xIVerb(frown,present,singular,first) --> [frown].
-xIVerb(frown,present,singular,second) --> [frown].
-xIVerb(frowns,present,singular,third) --> [frowns].
-xIVerb(frown,present,plural,_) --> [frown].
-xIVerb(frowned,past,_,_) --> [frowned].
-
-xIVerb(sneeze,present,singular,first) --> [sneeze].
-xIVerb(sneeze,present,singular,second) --> [sneeze].
-xIVerb(sneezes,present,singular,third) --> [sneezes].
-xIVerb(sneeze,present,plural,_) --> [sneeze].
-xIVerb(sneezed,past,_,_) --> [sneezed].
-
-%% Intransitive verbs can also be made of a "to be" verb (xTBVerb) and an
-%%  intransitive participle (xPart):
-%---------------------------------------
-xIVerb(part(VTree,PTree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers),
-                                            xPart(PTree,intran).
-
-
-%% TRANSITIVE VERBS:
-%---------------------------------------
-xTVerb(hug,present,singular,first) --> [hug].
-xTVerb(hug,present,singular,second) --> [hug].
-xTVerb(hugs,present,singular,third) --> [hugs].
-xTVerb(hug,present,plural,_) --> [hug].
-xTVerb(hugged,past,_,_) --> [hugged].
-
-xTVerb(kiss,present,singular,first) --> [kiss].
-xTVerb(kiss,present,singular,second) --> [kiss].
-xTVerb(kisses,present,singular,third) --> [kisses].
-xTVerb(kiss,present,plural,_) --> [kiss].
-xTVerb(kissed,past,_,_) --> [kissed].
-
-xTVerb(help,present,singular,first) --> [help].
-xTVerb(help,present,singular,second) --> [help].
-xTVerb(helps,present,singular,third) --> [helps].
-xTVerb(help,present,plural,_) --> [help].
-xTVerb(helped,past,_,_) --> [helped].
-
-%% Transitive verbs can also be made of a "to be" verb (xTBVerb) and a
-%%  transitive participle (xPart):
-%---------------------------------------
-xTVerb(part(VTree,PTree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers),
-                                            xPart(PTree,tran).
-
-
-%% INFINITIVE VERBS:
-%---------------------------------------
-xInfVerb(run,intran) --> [run].
-xInfVerb(frown,intran) --> [frown].
-xInfVerb(sneeze,intran) --> [sneeze].
-xInfVerb(hug,tran) --> [hug].
-xInfVerb(kiss,tran) --> [kiss].
-xInfVerb(help,tran) --> [help].
-
-
-%% PARTICIPLES:
-%---------------------------------------
-xPart(running,intran) --> [running].
-xPart(frowning,intran) --> [frowning].
-xPart(sneezing,intran) --> [sneezing].
-xPart(hugging,tran) --> [hugging].
-xPart(kissing,tran) --> [kissing].
-xPart(helping,tran) --> [helping].
-
-
-%% -------------------------------------------------------------------------- %
-%  Question Helpers (tense, number, and person specified):
-%% -------------------------------------------------------------------------- %
-xHelper(do,present,singular,first) --> [do].
-xHelper(do,present,singular,second) --> [do].
-xHelper(does,present,singular,third) --> [does].
-xHelper(do,present,plural,_) --> [do].
-xHelper(did,past,_,_) --> [did].
-
-%% -------------------------------------------------------------------------- %
-%  Question Words:
-%% -------------------------------------------------------------------------- %
-xQW(where) --> [where].
-xQW(when) --> [when].
-xQW(why) --> [why].
-xQW(how) --> [how].
-
-%% -------------------------------------------------------------------------- %
-%  Conjunctions:
-%% -------------------------------------------------------------------------- %
-xConj(conj(and)) --> [and].
-xConj(conj(or)) --> [or].
-xConj(conj(but)) --> [but].
-
-%% -------------------------------------------------------------------------- %
-%  Adjectives:
-%% -------------------------------------------------------------------------- %
-xAdj(adj(cute)) --> [cute].
-xAdj(adj(immaculate)) --> [immaculate].
-xAdj(adj(funny)) --> [funny].
-xAdj(adj(dumb)) --> [dumb].
-
-%% -------------------------------------------------------------------------- %
-%  Adverbs (modifiable part of speech specified):
-%% -------------------------------------------------------------------------- %
-xAdv((adv(rapidly)), verb) --> [rapidly].
-xAdv((adv(noisily)), verb) --> [noisily].
-xAdv((adv(very)), adj) --> [very].
-xAdv((adv(really)), adj) --> [quite].
-xAdv((adv(gracefully)), _) --> [gracefully].
-xAdv((adv(naturally)), _) --> [naturally].
-
-%%============================================================================%%
+write('\nIMPERATIVE:
+===========================').
+write('\nSentence: sneeze').
+xs(Tree,[sneeze]).
+
+write('------------------
+\nSentence: hug funny leslie knope').
+xs(Tree,[hug,funny,leslie,knope]).
+
+write('------------------
+\nSentence: run and run').
+xs(Tree,[run,and,run]).
+
+write('------------------
+\nSentence: please frown naturally behind us').
+xs(Tree,[please,frown,naturally,behind,us]).
+
+write('------------------
+\nSentence: please help me').
+xs(Tree,[please,help,me]).
+
+write('------------------
+\nSentence: kiss ron swanson near the quite dumb man').
+xs(Tree,[kiss,ron,swanson,near,the,quite,dumb,man]).
+
+write('------------------
+\nSentence: please hug her but sneeze around them').
+xs(Tree,[please,hug,her,but,sneeze,around,them]).
+
+
+write('\nINTERROGATIVE:
+===========================').
+
+
+
+%%------------------------------------------------------------------------------
+
 

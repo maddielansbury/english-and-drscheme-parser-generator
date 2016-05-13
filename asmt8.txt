@@ -1,3 +1,262 @@
+%%=============================%%
+%% CMPU-245, Spring 2016       %
+%% Asmt. 8                     %
+%% Macall McQueen &            %
+%% Madeline Lansbury           %
+%%=============================%%
+
+%=============%%
+%% PROBLEM 1.
+%%%%==============================%
+
+%%====================%%
+%%      SCHEME        %
+%%====================%%-------------------------------------------------- %%
+%% INPUTS: Tree, a parse tree.
+%%         Big, Little, the two parts of a difference list.
+%% -------
+%% scheme(Tree) holds if Big/Little represents a double quoted string
+%%  containing a valid Scheme expression, and Tree is the corresponding
+%%  parse tree.
+%% ----------------------------------------------------------------------- %%
+
+scheme(Tree) --> bool(Tree).
+scheme(Tree) --> num(Tree).
+scheme(Tree) --> id(Tree).
+scheme(Tree) --> null(Tree).
+scheme(Tree) --> "(", list(Tree).
+
+
+
+%%====================%%
+%%        BOOL        %
+%%====================%%-------------------------------------------------- %%
+%% INPUTS: Tree, a parse tree.
+%%         Big, Little, the two parts of a difference list.
+%% -------
+%% bool(Tree) holds if Big/Little represents a double quoted string
+%%  containing a Scheme boolean (#t or #f), and Tree is the corresponding
+%%  parse tree of the form bool(true) when Big/Little is "#t" and
+%%  bool(false) when Big/Little is "#f".
+%% ----------------------------------------------------------------------- %%
+
+bool(bool(true)) --> "#t".
+bool(bool(false)) --> "#f".
+
+
+%%====================%%
+%%        NUM         %
+%%====================%%-------------------------------------------------- %%
+%% INPUTS: Tree, a parse tree.
+%%         Big, Little, the two parts of a difference list.
+%% -------
+%% num(Tree,Big,Little) holds if Big/Little represents a double quoted string
+%%  containing a number defined by nums, and Tree is the corresponding
+%%  parse tree of the form num(N) where N is the number in atom form.
+%% ----------------------------------------------------------------------- %%
+
+num(num(Atnum),Big,Little) :-
+  nums(Big,Little),
+  dl_string_to_number(Big,Little,Atnum).
+
+
+%% digit(Big,Little) -- holds if calling isNumeral on the first element of
+%%                       Big/Little holds.
+
+digit --> [N], {isNumeral(N)}.
+
+
+%% nums(Big,Little) -- holds if Big/Little is a list of one or more digits.
+
+nums --> digit.
+nums --> digit, nums.
+
+
+
+%%====================%%
+%%         ID         %
+%%====================%%-------------------------------------------------- %%
+%% INPUTS: Tree, a parse tree.
+%%         Big, Little, the two parts of a difference list.
+%% -------
+%% id(Tree,Big,Little) holds if Big/Little represents a double quoted string
+%%  containing an identifier defined by ids, and Tree is the corresponding
+%%  parse tree of the form id(L) where L is the identifier in atom form.
+%% ----------------------------------------------------------------------- %%
+
+id(id(Atid),Xs,Ys) :-
+  ids(Xs,Ys),
+  dl_string_to_atom(Xs,Ys,Atid).
+
+
+%% letter(Big,Little) -- holds if calling isLetter on the first element of
+%%                        Big/Little holds.
+letter --> [L], {isLLetter(L)}.
+
+
+%% ids(Big,Little) -- holds if Big/Little is a list of one or more letters.
+ids --> letter.
+ids --> letter, ids.
+
+
+%%====================%%
+%%        NULL        %
+%%====================%%-------------------------------------------------- %%
+%% INPUTS: Tree, a parse tree.
+%%         Big, Little, the two parts of a difference list.
+%% -------
+%% null(Tree,Big,Little) holds if Big/Little represents a double quoted
+%%  string containing an empty list (), and Tree is the corresponding
+%%  parse tree of the form null.
+%% ----------------------------------------------------------------------- %%
+
+null(null) --> "()".
+
+
+%%====================%%
+%%      WS/WSOPT      %
+%%====================%%-------------------------------------------------- %%
+
+%% ws(Big,Little) -- holds if Big/Little is a list of one or more spaces.
+ws --> " ".
+ws --> " ", ws.
+
+%% wsOpt(Big,Little) -- holds if Big/Little is a list of zero or more spaces.
+wsOpt --> "".
+wsOpt --> ws.
+
+
+%%====================%%
+%%      LISTITEM      %
+%%====================%%-------------------------------------------------- %%
+%% INPUTS: Tree, a parse tree.
+%%         Big, Little, the two parts of a difference list.
+%% -------
+%% listItem(Tree) holds if Big/Little represents a double quoted string
+%%  containing a valid Scheme item followed by whitespace or a right paren,
+%%  and Tree is the corresponding parse tree of the form cons(T, null) when
+%%  there is a right paren (where T is the parse tree of the Scheme item),
+%%  or T otherwise. 
+%% ----------------------------------------------------------------------- %%
+
+listItem(Tree) --> wsOpt, scheme(Tree), ws.
+listItem(cons(Tree, null)) --> wsOpt, scheme(Tree), wsOpt, ")".
+
+
+
+%%====================%%
+%%        LIST        %
+%%====================%%-------------------------------------------------- %%
+%% INPUTS: Tree, a parse tree.
+%%         Big, Little, the two parts of a difference list.
+%% -------
+%% list(Tree) holds if Big/Little represents a double quoted string
+%%  containing one or more listItems, and Tree is the corresponding parse
+%%  tree of the form cons(T, RT) where T is the parse tree of the first
+%%  listItem and RT is the parse tree for the rest of the list.
+%% ----------------------------------------------------------------------- %%
+
+list(Tree) --> listItem(Tree).
+list(cons(Tree,RTree)) --> listItem(Tree), list(RTree).
+
+
+
+%%====================%%
+%%     EXPRWRAPPER    %
+%%====================%%-------------------------------------------------- %%
+%% INPUTS: Tree, a parse tree.
+%%         String, a double-quoted string (or list of char codes).
+%% -------
+%% expr(Tree) holds if Big/Little represents a double quoted string
+%%  containing a, and Tree is the corresponding parse
+%%  tree of the form cons(T, RT) where T is the parse tree of the first
+%%  listItem and RT is the parse tree for the rest of the list.
+%% ----------------------------------------------------------------------- %%
+
+exprWrapper(Tree,String) :- scheme(Tree,String,[]).
+
+
+
+%%====================%%
+%%       HELPERS      %
+%%====================%%-------------------------------------------------- %%
+
+%%  diffListConvert(Xs,Ys,Regular)
+%% ---------------------------------------
+%%    holds if Xs/Ys is a difference list
+%%    representation of Regular
+
+%%  Base Case: empty list
+diffListConvert(Ys,Ys,[]).
+
+%%  Recursive Case:  non-empty list
+diffListConvert([X|Big], Little, [X|Regular])
+  :- diffListConvert(Big,Little,Regular).
+
+%%  isLLetter
+%% ----------------------------
+%%  INPUT:  C, a number
+%% ----------------------------
+%%  isLLetter(C) holds if C is an ASCII code for a lowercase letter 
+%%  (from 'a' to 'z').
+
+isLLetter(C) :-  
+  char_code(a,Ca),
+  char_code(z,Cz),
+  C >= Ca,
+  C =< Cz.
+
+
+%%  isNumeral
+%% ----------------------------
+%%  INPUT:  C, a number
+%% ----------------------------
+%%  isLetter(C) holds if C is an ASCII code for a numeral 
+%%  (from '0' to '9').
+
+isNumeral(C) :-  
+  char_code('0',Cz),
+  char_code('9',Cn),
+  C >= Cz,
+  C =< Cn.
+
+
+%%  dl_string_to_number(Big,Little,Numby).
+%% -----------------------------------------------------
+%%  Holds if the Difference List Big/Little is a String
+%%  representation of the Prolog number Numby.
+
+dl_string_to_number(Big,Little,Numby) 
+  :- diffListConvert(Big,Little,Listy),
+     number_codes(Numby,Listy).
+
+
+%%  dl_string_to_atom(Big,Little,Adam).
+%% -----------------------------------------------------
+%%  Holds if the Difference List Big/Little is a String
+%%  representation of the Prolog atom Adam.
+
+dl_string_to_atom(Big,Little,Adam)
+  :- diffListConvert(Big,Little,Listy),
+     atom_codes(Adam,Listy).
+
+
+
+%%%============================================================================%
+%%============================================================================%%
+%============================================================================%%%
+
+
+
+
+
+
+
+
+%=============%%
+%% PROBLEM 2.
+%%%%==============================%
+
 
 %%============================================================================%%
 %  xs -- a wrapper function for xS.
@@ -32,16 +291,15 @@ xS(Tree) --> xQ(Tree).
 %  A declarative sentence is made up of either...
 %% -------------------------------------------------------------------------- %
 
-%% a subject (xSubj) and a verb phrase (xVP):
+%% a subject (xSubj) and a predicate (xPred):
 %---------------------------------------
-xD(d(STree,VTree)) --> xSubj(STree,Num,Pers),
-                       xVP(VTree,_,Num,Pers).
+xD(d(STree,PTree)) --> xSubj(STree,Num,Pers), xPred(PTree,_,Num,Pers).
 
 %% two declarative independent clauses (xDC) separated by a conjunction:
 %---------------------------------------
 xD(d(ATree,CTree,BTree)) --> xDC(ATree), xConj(CTree), xDC(BTree).
-xDC(ic(STree,VTree)) --> xSubj(STree,Num,Pers),
-                         xVP(VTree,_,Num,Pers).
+xDC(ic(STree,PTree)) --> xSubj(STree,Num,Pers),
+                         xPred(PTree,_,Num,Pers).
 
 %%============================================================================%%
 
@@ -126,60 +384,72 @@ xNP(np(ATree,NTree),plural,Pers) --> xAP(ATree), xNoun(NTree,plural,Pers).
 
 
 %%====================%%
+%%     PREDICATES     %
+%%====================%%======================================================%%
+%  A predicate is made up of either...
+%% -------------------------------------------------------------------------- %
+
+%% an optional adverbial phrase (xAdvP) and a standard verb phrase (xVP):
+%---------------------------------------
+xPred(pred(Tree),Tens,Num,Pers) --> xVP(Tree,Tens,Num,Pers).
+xPred(pred(ATree,VTree),Tens,Num,Pers) --> xAdvP(ATree),
+                                           xVP(VTree,Tens,Num,Pers).
+xPred(pred(VTree,ATree),Tens,Num,Pers) --> xVP(VTree,Tens,Num,Pers),
+                                           xAdvP(ATree).
+
+%% a "to be" verb phrase (xTBVP):
+%---------------------------------------
+xPred(pred(Tree),Tens,Num,Pers) --> xTBVP(Tree,Tens,Num,Pers).
+
+%%====================%%
 %%    VERB PHRASES    %
 %%====================%%======================================================%%
 %  A standard verb phrase is made up of either...
 %% -------------------------------------------------------------------------- %
 
-%% An intransitive verb (xIVerb) with an optional adverbial phrase (xAdvP) on
-%%  either side:
+%% an intransitive verb (xIVerb):
 %---------------------------------------
 xVP(vp(Tree),Tens,Num,Pers) --> xIVerb(Tree,Tens,Num,Pers).
-xVP(vp(VTree,ATree),Tens,Num,Pers) --> xIVerb(VTree,Tens,Num,Pers),
-                                       xAdvP(ATree).
-xVP(vp(ATree,VTree),Tens,Num,Pers) --> xAdvP(ATree),
-                                       xIVerb(VTree,Tens,Num,Pers).
 
-%% An intransitive verb (xIVerb) with an optional adverbial phrase (xAdvP) on
-%%  either side and a prepositional phrase (xPP):
+%% an intransitive verb (xIVerb) with a prepositional phrase (xPP):
 %---------------------------------------
 xVP(vp(VTree,PTree),Tens,Num,Pers) --> xIVerb(VTree,Tens,Num,Pers), xPP(PTree).
-xVP(vp(ATree,VTree,PTree),Tens,Num,Pers) --> xAdvP(ATree),
-                                             xIVerb(VTree,Tens,Num,Pers),
-                                             xPP(PTree).
-xVP(vp(VTree,ATree,PTree),Tens,Num,Pers) --> xIVerb(VTree,Tens,Num,Pers),
-                                             xAdvP(ATree), xPP(PTree).
 
-%% An optional adverbial phrase (xAdvP), a transitive verb (xTVerb), and an
-%%  object (xObj):
+%% a transitive verb (xTVerb), an object (xObj), and an optional prepositional
+%%  phrase (xPP):
 %---------------------------------------
 xVP(vp(VTree,OTree),Tens,Num,Pers) --> xTVerb(VTree,Tens,Num,Pers), xObj(OTree).
-xVP(vp(ATree,VTree,OTree),Tens,Num,Pers) --> xAdvP(ATree),
-                                             xTVerb(VTree,Tens,Num,Pers),
-                                             xObj(OTree).
+xVP(vp(VTree,OTree,PTree),Tens,Num,Pers) --> xTVerb(VTree,Tens,Num,Pers),
+                                             xObj(OTree), xPP(PTree).
 
-%% A "to be" verb (xTBVerb) and an object (xObj):
-%---------------------------------------
-xVP(vp(VTree,OTree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers), xObj(OTree).
+%% -------------------------------------------------------------------------- %
+%  A "to be" verb phrase is made up of either...
+%% -------------------------------------------------------------------------- %
 
-%% A "to be" verb (xTBVerb) and an adjective phrase (xAP):
+%% a "to be" verb (xTBVerb) and an object (xObj):
 %---------------------------------------
-xVP(vp(VTree,ATree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers), xAP(ATree).
+xTBVP(vp(VTree,OTree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers),
+                                         xObj(OTree).
+
+%% a "to be" verb (xTBVerb) and an adjective phrase (xAP):
+%---------------------------------------
+xTBVP(vp(VTree,ATree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers),
+                                         xAP(ATree).
 
 
 %% -------------------------------------------------------------------------- %
 %  An infinitive verb phrase is made up of either...
 %% -------------------------------------------------------------------------- %
 
-%% An infinitive verb (xInfVerb):
+%% an infinitive verb (xInfVerb):
 %---------------------------------------
 xInfVP(vp(Tree),intran) --> xInfVerb(Tree,intran).
 
-%% An infinitive verb (xInfVerb) and a prepositional phrase (xPP):
+%% an infinitive verb (xInfVerb) and a prepositional phrase (xPP):
 %---------------------------------------
 xInfVP(vp(VTree,PTree),intran) --> xInfVerb(VTree,intran), xPP(PTree).
 
-%% An infinitive verb (xInfVerb) and an object (xObj):
+%% an infinitive verb (xInfVerb) and an object (xObj):
 %---------------------------------------
 xInfVP(vp(VTree,OTree),tran) --> xInfVerb(VTree,tran),xObj(OTree).
 
@@ -288,10 +558,10 @@ xNoun(n(woman),singular,third) --> [woman].
 xNoun(n(women),plural,third) --> [women].
 xNoun(n(man),singular,third) --> [man].
 xNoun(n(men),plural,third) --> [men].
-xNoun(n(employee),singular,third) --> [employee].
-xNoun(n(employees),plural,third) --> [employees].
-xNoun(n(intern),singular,third) --> [intern].
-xNoun(n(interns),plural,third) --> [interns].
+xNoun(n(bureaucrat),singular,third) --> [bureaucrat].
+xNoun(n(bureaucrats),plural,third) --> [bureaucrats].
+xNoun(n(clerk),singular,third) --> [clerk].
+xNoun(n(clerks),plural,third) --> [clerks].
 xNoun(n(nurse),singular,third) --> [nurse].
 xNoun(n(nurses),plural,third) --> [nurses].
 
@@ -450,7 +720,7 @@ xConj(conj(but)) --> [but].
 %  Adjectives:
 %% -------------------------------------------------------------------------- %
 xAdj(adj(cute)) --> [cute].
-xAdj(adj(immaculate)) --> [immaculate].
+xAdj(adj(splendid)) --> [splendid].
 xAdj(adj(funny)) --> [funny].
 xAdj(adj(dumb)) --> [dumb].
 
@@ -465,4 +735,5 @@ xAdv((adv(gracefully)), _) --> [gracefully].
 xAdv((adv(naturally)), _) --> [naturally].
 
 %%============================================================================%%
+
 

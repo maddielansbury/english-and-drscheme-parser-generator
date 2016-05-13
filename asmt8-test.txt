@@ -1,0 +1,254 @@
+%%=============================%%
+%% CMPU-245, Spring 2016       %
+%% Asmt. 8 - TESTS             %
+%% Macall McQueen &            %
+%% Madeline Lansbury           %
+%%=============================%%
+
+
+write('===============================
+  CMPU-245, Spring 2016
+  Asmt. 8 - TESTS
+  Macall McQueen &
+  Madeline Lansbury
+===============================').
+
+['asmt8.txt'].
+
+%%------------------------------------------------------------------------------
+
+%=============%%
+%% PROBLEM 1.
+%%%%==============================%
+
+write('\nBOOLEANS:
+===========================').
+write('\nExpression: "#t"').
+exprWrapper(Tree, "#t").
+
+write('------------------
+\nExpression: "#f"').
+exprWrapper(Tree, "#f").
+
+
+write('\nNUMBERS:
+===========================').
+write('\nExpression: "0"').
+exprWrapper(Tree, "0").
+
+write('------------------
+\nExpression: "9"').
+exprWrapper(Tree, "9").
+
+write('------------------
+\nExpression: "2106"').
+exprWrapper(Tree, "2106").
+
+write('------------------
+\nExpression: "3452071"').
+exprWrapper(Tree, "3452071").
+
+
+write('\nIDENTIFIERS:
+===========================').
+write('\nExpression: "a"').
+exprWrapper(Tree, "a").
+
+write('------------------
+\nExpression: "z"').
+exprWrapper(Tree, "z").
+
+write('------------------
+\nExpression: "not"').
+exprWrapper(Tree, "not").
+
+write('------------------
+\nExpression: "member"').
+exprWrapper(Tree, "member").
+
+
+write('\nEMPTY LIST:
+===========================').
+write('\nExpression: "()"').
+exprWrapper(Tree, "()").
+
+
+write('\nNON-EMPTY LISTS:
+===========================').
+write('\nExpression: "(#t)"').
+exprWrapper(Tree, "(#t)").
+
+write('------------------
+\nExpression: "(  356 )"').
+exprWrapper(Tree, "(  356 )").
+
+write('------------------
+\nExpression: "( ())"').
+exprWrapper(Tree, "( ())").
+
+write('------------------
+\nExpression: "(abcd  )"').
+exprWrapper(Tree, "(abcd  )").
+
+write('------------------
+\nExpression: "( 2 baa    #t)"').
+exprWrapper(Tree, "( 2 baa    #t)").
+
+write('------------------
+\nExpression: "(  ()      36256 )"').
+exprWrapper(Tree, "(  ()      36256 )").
+
+write('------------------
+\nExpression: "(#f  taaha () 454    jabber   )"').
+exprWrapper(Tree, "(#f  taaha () 454    jabber   )").
+
+write('------------------
+\nExpression: "( 5 (cart  bart taaaart    113)  #t abcd  )"').
+exprWrapper(Tree, "( 5 (cart  bart taaaart    113)  #t abcd  )").
+
+write('------------------
+\nExpression: "( (#f)  ( ahahah 42 )  (87 ()))"').
+exprWrapper(Tree, "( (#f)  ( ahahah 42 )  (87 ()))").
+
+
+write('\nFALSE CASES:
+===========================').
+write('\nExpression: "#a"').
+exprWrapper(Tree, "#a").
+
+write('------------------
+\nExpression: "(("').
+exprWrapper(Tree, "((").
+
+write('------------------
+\nExpression: "a8g6"').
+exprWrapper(Tree, "a8g6").
+
+write('------------------
+\nExpression: "1 34"').
+exprWrapper(Tree, "1 34").
+
+write('------------------
+\nExpression: "bcs 55a n"').
+exprWrapper(Tree, "bcs 55a").
+
+write('------------------
+\nExpression: "(#f#f  )"').
+exprWrapper(Tree, "(#f#f  )").
+
+write('------------------
+\nExpression: "( abc3  fff)"').
+exprWrapper(Tree, "( abc3  fff)").
+
+write('------------------
+\nExpression: "( b(k6k) 255  )"').
+exprWrapper(Tree, "( b(k6k) 255  )").
+
+write('------------------
+\nExpression: "(15 #a (abc  3 #t)  )"').
+exprWrapper(Tree, "(15 #a (abc  3 #t)  )").
+
+%%------------------------------------------------------------------------------
+
+
+
+%=============%%
+%% PROBLEM 2.
+%%%%==============================%
+
+write('\nDECLARATIVE:
+===========================').
+write('\nSentence: april ludgate runs').
+xs(Tree,[april,ludgate,runs]).
+
+write('------------------
+\nSentence: i sneeze').
+xs(Tree,[i,sneeze]).
+
+write('------------------
+\nSentence: you hugged ron swanson').
+xs(Tree,[you,hugged,ron,swanson]).
+
+write('------------------
+\nSentence: clerks were frowning').
+xs(Tree,[clerks,were,frowning]).
+
+write('------------------
+\nSentence: she kissed some woman').
+xs(Tree,[she,kissed,some,woman]).
+
+write('------------------
+\nSentence: ben wyatt ran around leslie knope').
+xs(Tree,[ben,wyatt,ran,around,leslie,knope]).
+
+write('------------------
+\nSentence: nurses are helping us behind bureaucrats').
+xs(Tree,[nurses,are,helping,us,behind,bureaucrats]).
+
+write('------------------
+\nSentence: that funny man frowned noisily').
+xs(Tree,[that,funny,man,frowned,noisily]).
+
+write('------------------
+\nSentence: a cute cute nurse gracefully sneezed by april ludgate').
+xs(Tree,[a,cute,cute,nurse,gracefully,sneezed,by,april,ludgate]).
+
+write('------------------
+\nSentence: ron swanson is quite splendid').
+xs(Tree,[ron,swanson,is,quite,splendid]).
+
+write('------------------
+\nSentence: we are sneezing rapidly but that dumb nurse helped us').
+xs(Tree,[we,are,sneezing,rapidly,but,that,dumb,nurse,helped,us]).
+
+write('------------------
+\nSentence: those bureaucrats are frowning naturally and they were cute').
+xs(Tree,[those,bureaucrats,are,frowning,naturally,and,they,were,cute]).
+
+write('------------------
+\nSentence: andy dwyer kissed very cute april ludgate so they run by us').
+xs(Tree,[andy,dwyer,kissed,very,cute,april,ludgate,so,they,run,by,us]).
+
+
+write('\nIMPERATIVE:
+===========================').
+write('\nSentence: sneeze').
+xs(Tree,[sneeze]).
+
+write('------------------
+\nSentence: hugfunnyleslieknope').
+xs(Tree,[hug,funny,leslie,knope]).
+
+write('------------------
+\nSentence: run and run').
+xs(Tree,[run,and,run]).
+
+write('------------------
+\nSentence: ').
+xs(Tree,[]).
+
+write('------------------
+\nSentence: ').
+xs(Tree,[]).
+
+write('------------------
+\nSentence: ').
+xs(Tree,[]).
+
+write('------------------
+\nSentence: ').
+xs(Tree,[]).
+
+write('------------------
+\nSentence: ').
+xs(Tree,[]).
+
+
+write('\nINTERROGATIVE:
+===========================').
+
+
+
+%%------------------------------------------------------------------------------
+
+

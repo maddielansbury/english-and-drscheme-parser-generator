@@ -1,0 +1,520 @@
+===============================
+  CMPU-245, Spring 2016
+  Asmt. 8 - OUTPUT
+  Macall McQueen &
+  Madeline Lansbury
+===============================
+true.
+
+% asmt8.txt compiled 0.00 sec, 241 clauses
+true.
+
+
+BOOLEANS:
+===========================
+true.
+
+
+Expression: "#t"
+true.
+
+Tree = bool(true) 
+------------------
+
+Expression: "#f"
+true.
+
+Tree = bool(false) 
+
+NUMBERS:
+===========================
+true.
+
+
+Expression: "0"
+true.
+
+Tree = num(0) 
+------------------
+
+Expression: "9"
+true.
+
+Tree = num(9) 
+------------------
+
+Expression: "2106"
+true.
+
+Tree = num(2106) 
+------------------
+
+Expression: "3452071"
+true.
+
+Tree = num(3452071) 
+
+IDENTIFIERS:
+===========================
+true.
+
+
+Expression: "a"
+true.
+
+Tree = id(a) 
+------------------
+
+Expression: "z"
+true.
+
+Tree = id(z) 
+------------------
+
+Expression: "not"
+true.
+
+Tree = id(not) 
+------------------
+
+Expression: "member"
+true.
+
+Tree = id(member) 
+
+EMPTY LIST:
+===========================
+true.
+
+
+Expression: "()"
+true.
+
+Tree = null 
+
+NON-EMPTY LISTS:
+===========================
+true.
+
+
+Expression: "(#t)"
+true.
+
+Tree = cons(bool(true), null) 
+------------------
+
+Expression: "(  356 )"
+true.
+
+Tree = cons(num(356), null) 
+------------------
+
+Expression: "( ())"
+true.
+
+Tree = cons(null, null) 
+------------------
+
+Expression: "(abcd  )"
+true.
+
+Tree = cons(id(abcd), null) 
+------------------
+
+Expression: "( 2 baa    #t)"
+true.
+
+Tree = cons(num(2), cons(id(baa), cons(bool(true), null))) 
+------------------
+
+Expression: "(  ()      36256 )"
+true.
+
+Tree = cons(null, cons(num(36256), null)) 
+------------------
+
+Expression: "(#f  taaha () 454    jabber   )"
+true.
+
+Tree = cons(bool(false), cons(id(taaha), cons(null, cons(num(454),
+ cons(id(jabber), null))))) 
+------------------
+
+Expression: "( 5 (cart  bart taaaart    113)  #t abcd  )"
+true.
+
+Tree = cons(num(5), cons(cons(id(cart), cons(id(bart), cons(id(taaaart),
+ cons(cons(num(113), null), cons(bool(true), id(abcd)))))), null)) 
+------------------
+
+Expression: "( (#f)  ( ahahah 42 )  (87 ()))"
+true.
+
+Tree = cons(cons(bool(false), null), cons(cons(id(ahahah), cons(num(42), null)),
+ cons(cons(num(87), cons(null, null)), null))) 
+
+FALSE CASES:
+===========================
+true.
+
+
+Expression: "#a"
+true.
+
+false.
+
+------------------
+
+Expression: "(("
+true.
+
+false.
+
+------------------
+
+Expression: "a8g6"
+true.
+
+false.
+
+------------------
+
+Expression: "1 34"
+true.
+
+false.
+
+------------------
+
+Expression: "bcs 55a n"
+true.
+
+false.
+
+------------------
+
+Expression: "(#f#f  )"
+true.
+
+false.
+
+------------------
+
+Expression: "( abc3  fff)"
+true.
+
+false.
+
+------------------
+
+Expression: "( b(k6k) 255  )"
+true.
+
+false.
+
+------------------
+
+Expression: "(15 #a (abc  3 #t)  )"
+true.
+
+false.
+
+
+DECLARATIVE:
+===========================
+true.
+
+
+Sentence: april ludgate runs
+true.
+
+Tree = d(np(pn(april, ludgate)), pred(vp(runs))) 
+------------------
+
+Sentence: i sneeze
+true.
+
+Tree = d(p(i), pred(vp(sneeze))) 
+------------------
+
+Sentence: you hugged ron swanson
+true.
+
+Tree = d(p(you), pred(vp(hugged, np(pn(ron, swanson))))) 
+------------------
+
+Sentence: clerks were frowning
+true.
+
+Tree = d(np(n(clerks)), pred(vp(part(were, frowning)))) 
+------------------
+
+Sentence: she kissed some woman
+true.
+
+Tree = d(p(she), pred(vp(kissed, np(det(some), n(woman))))) 
+------------------
+
+Sentence: ben wyatt ran around leslie knope
+true.
+
+Tree = d(np(pn(ben, wyatt)), pred(vp(ran, pp(around, np(pn(leslie, knope)))))) 
+------------------
+
+Sentence: nurses are helping us behind bureaucrats
+true.
+
+Tree = d(np(n(nurses)), pred(vp(part(are, helping), p(us), pp(behind,
+ np(n(bureaucrats)))))) 
+------------------
+
+Sentence: that funny man frowned noisily
+true.
+
+Tree = d(np(det(that), ap(adj(funny)), n(man)), pred(vp(frowned), adv(noisily))) 
+------------------
+
+Sentence: a cute cute nurse gracefully sneezed by april ludgate
+true.
+
+Tree = d(np(det(a), ap(adj(cute), adj(cute)), n(nurse)), pred(adv(gracefully),
+ vp(sneezed, pp(by, np(pn(april, ludgate)))))) 
+------------------
+
+Sentence: ron swanson is quite splendid
+true.
+
+Tree = d(np(pn(ron, swanson)), pred(vp(is, ap(adv(really), adj(splendid))))) 
+------------------
+
+Sentence: we are sneezing rapidly but that dumb nurse helped us
+true.
+
+Tree = d(ic(p(we), pred(vp(part(are, sneezing)), adv(rapidly))), conj(but),
+ ic(np(det(that), ap(adj(dumb)), n(nurse)), pred(vp(helped, p(us))))) 
+------------------
+
+Sentence: those bureaucrats are frowning naturally and they were cute
+true.
+
+Tree = d(ic(np(det(those), n(bureaucrats)), pred(vp(part(are, frowning)),
+ adv(naturally))), conj(and), ic(p(they), pred(vp(were, ap(adj(cute)))))) 
+------------------
+
+Sentence: andy dwyer kissed very cute april ludgate so we ran by them
+true.
+
+false.
+
+
+IMPERATIVE:
+===========================
+true.
+
+
+Sentence: sneeze
+true.
+
+Tree = i(vp(sneeze)) 
+------------------
+
+Sentence: hug funny leslie knope
+true.
+
+Tree = i(vp(hug, np(ap(adj(funny)), pn(leslie, knope)))) 
+------------------
+
+Sentence: run and run
+true.
+
+Tree = i(ic(vp(run)), conj(and), ic(vp(run))) 
+------------------
+
+Sentence: please frown naturally behind us
+true.
+
+false.
+
+------------------
+
+Sentence: please help me
+true.
+
+Tree = i(please, vp(help, p(me))) 
+------------------
+
+Sentence: kiss ron swanson near the quite dumb man
+true.
+
+Tree = i(vp(kiss, np(pn(ron, swanson)), pp(near, np(det(the), ap(adv(really),
+ adj(dumb)), n(man))))) 
+------------------
+
+Sentence: please hug her but sneeze around them
+true.
+
+Tree = i(please, ic(vp(hug, p(her))), conj(but), ic(vp(sneeze, pp(around,
+ p(them))))) 
+
+INTERROGATIVE:
+===========================
+true.
+
+
+Sentence: do many men sneeze naturally
+true.
+
+Tree = q(qhelp(do), np(det(many), n(men)), vp(sneeze), adv(naturally)) 
+------------------
+
+Sentence: why does very cute april ludgate kiss quite dumb andy dwyer
+true.
+
+Tree = q(qhelp(why, does), np(ap(adv(very), adj(cute)), pn(april, ludgate)),
+ vp(kiss, np(ap(adv(really), adj(dumb)), pn(andy, dwyer)))) 
+------------------
+
+Sentence: did leslie knope noisily run behind us
+true.
+
+Tree = q(qhelp(did), np(pn(leslie, knope)), adv(noisily), vp(run, pp(behind,
+ p(us)))) 
+------------------
+
+Sentence: how did the splendid splendid bureaucrats help you
+true.
+
+Tree = q(qhelp(how, did), np(det(the), ap(adj(splendid), adj(splendid)),
+ n(bureaucrats)), vp(help, p(you))) 
+------------------
+
+Sentence: where do they run
+true.
+
+Tree = q(qhelp(where, do), p(they), vp(run)) 
+------------------
+
+Sentence: do you naturally hug ron swanson around leslie knope
+true.
+
+Tree = q(qhelp(do), p(you), adv(naturally), vp(hug, np(pn(ron, swanson)),
+ pp(around, np(pn(leslie, knope))))) 
+
+INCORRECT SENTENCES:
+===========================
+true.
+
+------------------
+
+Sentence: the women runs
+true.
+
+false.
+
+------------------
+
+Sentence: the woman run
+true.
+
+false.
+
+------------------
+
+Sentence: april ludgate are andy dwyer
+true.
+
+false.
+
+------------------
+
+Sentence: she ran behind i
+true.
+
+false.
+
+------------------
+
+Sentence: i ran by she
+true.
+
+false.
+
+------------------
+
+Sentence: did she ran
+true.
+
+false.
+
+------------------
+
+Sentence: does they run
+true.
+
+false.
+
+------------------
+
+Sentence: women is women
+true.
+
+false.
+
+------------------
+
+Sentence: please help we
+true.
+
+false.
+
+------------------
+
+Sentence: april ludgate kissed around the women
+true.
+
+false.
+
+------------------
+
+Sentence: april ludgate ran very
+true.
+
+false.
+
+------------------
+
+Sentence: please hugged the man
+true.
+
+false.
+
+------------------
+
+Sentence: i rapidly am running rapidly
+true.
+
+false.
+
+------------------
+
+Sentence: i hugged her and it hugged
+true.
+
+false.
+
+------------------
+
+Sentence: i hugged it and hug
+true.
+
+false.
+
+------------------
+
+Sentence: i cute
+true.
+
+false.
+
+
+% halt

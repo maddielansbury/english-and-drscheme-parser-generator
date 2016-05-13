@@ -8,7 +8,7 @@
 
 write('===============================
   CMPU-245, Spring 2016
-  Asmt. 8 - TESTS
+  Asmt. 8 - OUTPUT
   Macall McQueen &
   Madeline Lansbury
 ===============================').

@@ -216,7 +216,7 @@ write('\nSentence: sneeze').
 xs(Tree,[sneeze]).
 
 write('------------------
-\nSentence: hugfunnyleslieknope').
+\nSentence: hug funny leslie knope').
 xs(Tree,[hug,funny,leslie,knope]).
 
 write('------------------

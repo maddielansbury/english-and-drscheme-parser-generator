@@ -252,3 +252,72 @@ write('\nINTERROGATIVE:
 %%------------------------------------------------------------------------------
 
 
+write('\INCORRECT SENTENCES:
+===========================').
+
+write('------------------
+\nSentence: the women runs').
+xs(Tree,[the, women, runs]).
+
+write('------------------
+\nSentence: the woman run').
+xs(Tree,[the, woman, run]).
+
+write('------------------
+\nSentence: the women runs').
+xs(Tree,[the, women, runs]).
+
+write('------------------
+\nSentence: april ludgate are andy dwyer').
+xs(Tree,[april, ludgate, are, andy, dwyer]).
+
+write('------------------
+\nSentence: she ran behind i').
+xs(Tree,[she, ran, behind, i]).
+
+write('------------------
+\nSentence: i ran by she').
+xs(Tree,[i, ran, by, she]).
+
+write('------------------
+\nSentence: did she ran').
+xs(Tree,[did, she, ran]).
+
+write('------------------
+\nSentence: does they run').
+xs(Tree,[does, they, run]).
+
+
+write('------------------
+\nSentence: does they run').
+xs(Tree,[does, they, run]).
+
+
+write('------------------
+\nSentence: women is women').
+xs(Tree,[women, is, women]).
+
+write('------------------
+\nSentence: please help we').
+xs(Tree,[please, help, we]).
+
+write('------------------
+\nSentence: april ludgate kissed around the woman').
+xs(Tree,[april, ludgate, kissed, around, the, women]).
+
+write('------------------
+\nSentence: april ludgate kissed around the woman').
+xs(Tree,[april, ludgate, kissed, around, the, women]).
+
+write('------------------
+\nSentence: april ludgate ran very').
+xs(Tree,[april, ludgate, ran, very]).
+
+write('------------------
+\nSentence: i ludgate ran very').
+xs(Tree,[april, ludgate, ran, very]).
+
+write('------------------
+\nSentence: please hugged the man').
+xs(Tree,[please, hugged, the, man]).
+

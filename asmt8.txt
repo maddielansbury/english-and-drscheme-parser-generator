@@ -587,16 +587,24 @@ xPronoun(p(we),plural,first) --> [we].
 xPronoun(p(they),plural,third) --> [they].
 xPronoun(p(she),singular,third) --> [she].
 xPronoun(p(he),singular,third) --> [he].
+xPronoun(p(it),singular,third) --> [it].
+xPronoun(p(that),singular,third) --> [that].
+xPronoun(p(this),singular,third) --> [this].
+
 
 %% -------------------------------------------------------------------------- %
 %  Object Pronouns:
 %% -------------------------------------------------------------------------- %
+
 xObjPronoun(p(us)) --> [us].
 xObjPronoun(p(me)) --> [me].
 xObjPronoun(p(him)) --> [him].
 xObjPronoun(p(her)) --> [her].
 xObjPronoun(p(them)) --> [them].
 xObjPronoun(p(you)) --> [you].
+xObjPronoun(p(it)) --> [it].
+xObjPronoun(p(that)) --> [that].
+xObjPronoun(p(this)) --> [this].
 
 %% -------------------------------------------------------------------------- %
 %  Prepositions:

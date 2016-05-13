@@ -2,130 +2,180 @@
 %%  The tense of the verb phrase must be the same as the tense of
 %%  the sentence.
 
-xS(Tense, Num, Person) --> xD(Tense, Num, Person).
-xS(Tense, Num, Person) --> xQ(Tense, Num, Person).
-xS(_, _, _) --> xI.
+xS(Tree, Tense, Num, Person) --> xD(Tree, Tense, Num, Person).
+xS(Tree, Tense, Num, Person) --> xQ(Tree, Tense, Num, Person).
+xS(Tree, _, _, _) --> xI(Tree).
+
+%xD(ATree, BTree, Tense, Num, Person, Tense2, Num2, Person2) --> xDC(ATree,Tense, Num, Person), xConj(_), xDC(BTree,Tense2, Num2, Person2).
+
+xDC(d(NTree, VTree), Tense, Num, Person) --> xSubj(NTree, Tense, Num, Person), xVP(VTree, Tense, Num, Person).
+xQ(q(HTree, NTree, VTree), Tense, Num, Person) --> xH(HTree, Tense, Num, Person), xSubj(NTree, Tense, Num, Person), xInfVP(VTree, _).
+xI(i(VTree)) --> xInfVP(VTree, _).
 
 
-xD(Tense, Num, Person) --> xNP(Tense, Num, Person), xVP(Tense, Num, Person).
+xNP(np(NTree), Tense, Num, Person) --> xPropNoun(NTree, Tense, Num, Person).
+xNP(np(ATree, NTree), Tense, Num, Person) --> xAP(ATree), xPropNoun(NTree, Tense, Num, Person).
 
-xNP(Tense, Num, Person) --> xAP, xPropNoun(Tense, Num, Person).
-xNP(Tense, Num, Person) --> xDet(Tense, Num, Person), xAP, xNoun(Tense, Num, Person).
-xNP(Tense, Num, Person) --> xPronoun(Tense, Num, Person).
+xNP(np(NTree), Tense, plural, Person) --> xNoun(NTree, Tense, plural, Person).
+xNP(np(ATree, NTree), Tense, plural, Person) --> xAP(ATree), xNoun(NTree, Tense, plural, Person).
 
-xIObj(Tense, Num, Person) --> xPrep, xAP, xPropNoun(Tense, Num, Person).
-xIObj(Tense, Num, Person) --> xPrep, xDet(Tense, Num, Person), xAP, xNoun(Tense, Num, Person).
-xIObj(_, _, _) --> xPrep, xObjPronoun.
-
-xVP(Tense, Num, Person) --> xIVerb(Tense, Num, Person), xAdvP.
-xVP(Tense, Num, Person) --> xAdvP, xIVerb(Tense, Num, Person).
-xVP(Tense, Num, Person) --> xAdvP, xIVerb(Tense, Num, Person), xIObj(_, _, _).
-
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2).
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xAP, xPropNoun(_, _, _).
-xVP(Tense, Num, Person) --> xTVerb(Tense, Num, Person), xObjPronoun.
+xNP(np(DTree, ATree, NTree), Tense, Num, Person) --> xDet(DTree, Tense, Num, Person), xAP(ATree), xNoun(NTree, Tense, Num, Person).
+xNP(np(DTree, NTree), Tense, Num, Person) --> xDet(DTree, Tense, Num, Person), xNoun(NTree, Tense, Num, Person).
 
 
-xInfVP(intran) --> xInfVerb(intran).
-xInfVP(intran) --> xInfVerb(intran), xIObj(_, _, _).
-
-xInfVP(tran) --> xInfVerb(tran), xDet(Tense2, Num2, Person2), xAP, xNoun(Tense2, Num2, Person2).
-xInfVP(tran) --> xInfVerb(tran), xAP, xPropNoun(_, _, _).
-xInfVP(tran) --> xInfVerb(tran), xObjPronoun.
+xSubj(np(NTree), Tense, Num, Person) --> xNP(NTree, Tense, Num, Person).
+xSubj(np(NTree), Tense, Num, Person) --> xPronoun(NTree, Tense, Num, Person).
 
 
-xAP --> [].
-xAP --> xAdv(adj), xAdj.
-xAP --> xAdj, xAdj.
-
-xAdvP --> [].
-xAdvP --> xAdv(verb).
+xObj(np(NTree)) --> xNP(NTree, _, _, _).
+xObj(np(NTree)) --> xObjPronoun(NTree).
 
 
-xQ(Tense, Num, Person) --> xHelper(Tense, Num, Person), xNP(Tense, Num, Person), xInfVP(_).
+xPP(prep(PTree, NTree)) --> xPrep(PTree), xNP(NTree, _, _, _).
+xPP(prep(PTree, NTree)) --> xPrep(PTree), xObjPronoun(NTree).
 
 
-xI --> xInfVP(_).
+xVP(vp(VTree), Tense, Num, Person) --> xIVerb(VTree, Tense, Num, Person).
+xVP(vp(VTree, ATree), Tense, Num, Person) --> xIVerb(VTree, Tense, Num, Person), xAdvP(ATree).
+xVP(vp(ATree, VTree), Tense, Num, Person) --> xAdvP(ATree), xIVerb(VTree, Tense, Num, Person).
+
+xVP(vp(VTree, NTree), Tense, Num, Person) --> xIVerb(VTree, Tense, Num, Person), xPP(NTree).
+xVP(vp(ATree, VTree, NTree), Tense, Num, Person) --> xAdvP(ATree), xIVerb(VTree, Tense, Num, Person), xPP(NTree).
+xVP(vp(VTree, ATree, NTree), Tense, Num, Person) --> xIVerb(VTree, Tense, Num, Person), xAdvP(ATree), xPP(NTree).
+
+xVP(vp(VTree, DTree), Tense, Num, Person) --> xTVerb(VTree, Tense, Num, Person), xObj(DTree).
+xVP(vp(AdvTree, VTree, DTree), Tense, Num, Person) --> xAdvP(AdvTree), xTVerb(VTree, Tense, Num, Person), xObj(DTree).
+
+xVP(vp(VTree, DTree), Tense, Num, Person) --> xTBVerb(VTree, Tense, Num, Person), xObj(DTree).
+xVP(vp(VTree, ATree), Tense, Num, Person) --> xTBVerb(VTree, Tense, Num, Person), xAP(ATree).
+
+
+xInfVP(vp(VTree), intran) --> xInfVerb(VTree, intran).
+xInfVP(vp(VTree, PTree), intran) --> xInfVerb(VTree, intran), xPP(PTree).
+
+xInfVP(vp(VTree, NTree), tran) --> xInfVerb(VTree, tran), xObj(NTree).
+
+
+xAP(ap(Tree)) --> xAdj(Tree).
+xAP(ap(AdvTree, AdjTree)) --> xAdv(AdvTree, adj), xAdj(AdjTree).
+xAP(ap(ATree1, ATree2)) --> xAdj(ATree1), xAdj(ATree2).
+
+xAdvP(Tree) --> xAdv(Tree, verb).
+
+
+xQP(h(QTree,HTree), Tense, Num, Person) --> xQW(QTree), xHelper(HTree, Tense, Num, Person).
+xQP(h(Tree), Tense, Num, Person) --> xHelper(Tree, Tense, Num, Person).
 
 
 %%------------------------------------------------------------------------------------------
 
 %% Some words...
 
-xDet(_, singular, third) --> [a].
-xDet(_, _, third) --> [the].
-xDet(_, plural, third) --> [some].
-xDet(_, plural, third) --> [].
+xDet(det(a), _, singular, third) --> [a].
+xDet(det(the), _, _, third) --> [the].
+xDet(det(some), _, _, third) --> [some].
 
-xNoun(_, singular, third) --> [woman].
-xNoun(_, plural, third) --> [women].
+xNoun(n(woman), _, singular, third) --> [woman].
+xNoun(n(women), _, plural, third) --> [women].
 
-%xNoun(_, singular, third) --> [man].
-%xNoun(_, plural, third) --> [men].
+%xNoun(n(man), _, singular, third) --> [man].
+%xNoun(n(men), _, plural, third) --> [men].
 
-xPropNoun(_, singular, third) --> [april, ludgate].
-xPropNoun(_, singular, third) --> [andy, dwyer].
-%xPropNoun(_, singular, third) --> [ron, swanson].
+xPropNoun(pn(april, ludgate), _, singular, third) --> [april, ludgate].
+xPropNoun(pn(andy, dwyer), _, singular, third) --> [andy, dwyer].
+%xPropNoun(pn(ron, swanson), _, singular, third) --> [ron, swanson].
 
 % Subject pronouns
 
-xPronoun(_, _, second) --> [you].
-xPronoun(_, singular, first) --> [i].
-xPronoun(_, plural, first) --> [we].
-xPronoun(_, plural, third) --> [they].
-xPronoun(_, singular, third) --> [she].
-xPronoun(_, singular, third) --> [he].
+xPronoun(pro(you), _, _, second) --> [you].
+xPronoun(pro(i), _, singular, first) --> [i].
+xPronoun(pro(we), _, plural, first) --> [we].
+xPronoun(pro(they), _, plural, third) --> [they].
+xPronoun(pro(she), _, singular, third) --> [she].
+xPronoun(pro(he), _, singular, third) --> [he].
 
 % Indirect object pronouns:
 
-xObjPronoun --> [us].
-xObjPronoun --> [me].
-xObjPronoun --> [him].
-xObjPronoun --> [her].
-xObjPronoun --> [them].
-xObjPronoun --> [you].
+xObjPronoun(pro(us)) --> [us].
+xObjPronoun(pro(me)) --> [me].
+xObjPronoun(pro(him)) --> [him].
+xObjPronoun(pro(her)) --> [her].
+xObjPronoun(pro(them)) --> [them].
+xObjPronoun(pro(you)) --> [you].
 
 %% Some more words...
 
-xPrep --> [to].
-%xPrep --> [from].
-%xPrep --> [around].
+xPrep(to) --> [to].
+%xPrep(from) --> [from].
+%xPrep(around) --> [around].
 
 %%  Individual words.  Here, the tense of a given word is
 %%  specified by a constant (e.g., past or present).
 
-xIVerb(present, singular, third) --> [runs].
-xIVerb(present, singular, first) --> [run].
-xIVerb(present, plural, _) --> [run].
-xIVerb(past, _, _) --> [ran].
+xIVerb(run, present, singular, first) --> [run].
+xIVerb(run, present, singular, second) --> [run].
+xIVerb(runs, present, singular, third) --> [runs].
+xIVerb(run, present, plural, _) --> [run].
+xIVerb(ran, past, _, _) --> [ran].
 
-xTVerb(present, singular, third) --> [hugs].
-xTVerb(present, singular, first) --> [hug].
-xTVerb(present, singular, second) --> [hug].
-xTVerb(present, plural, _) --> [hug].
-xTVerb(past, _, _) --> [hugged].
+xTVerb(hug, present, singular, first) --> [hug].
+xTVerb(hug, present, singular, second) --> [hug].
+xTVerb(hugs, present, singular, third) --> [hugs].
+xTVerb(hug, present, plural, _) --> [hug].
+xTVerb(hugged, past, _, _) --> [hugged].
 
-xInfVerb(intran) --> [run].
-xInfVerb(tran) --> [hug].
+xInfVerb(run, intran) --> [run].
+xInfVerb(hug, tran) --> [hug].
+
+% -------------TO--BE--VERBS----------------
+
+xTBVerb(am, present, singular, first) --> [am].
+xTBVerb(are, present, singular, second) --> [are].
+xTBVerb(is, present, singular, third) --> [is].
+
+xTBVerb(are, present, plural, _) --> [are].
+
+xTBVerb(was, past, singular, first) --> [was].
+xTBVerb(was, past, singular, third) --> [was].
+xTBVerb(were, past, plural, _) --> [were].
+
+% ------------------------------------------
 
 %%  xHelper:  holds for the helper verbs "does", "did", etc.
 
-xHelper(present, singular, third) --> [does].
-xHelper(present, singular, second) --> [do].
-xHelper(present, singular, first) --> [do].
-xHelper(present, plural, _) --> [do].
-xHelper(past, _, _) --> [did].
+xHelper(does, present, singular, third) --> [does].
+xHelper(do, present, singular, second) --> [do].
+xHelper(do, present, singular, first) --> [do].
+xHelper(do, present, plural, _) --> [do].
+xHelper(did, past, _, _) --> [did].
+
+xQW(where) --> [where].
+xQW(when) --> [when].
+xQW(why) --> [why].
+xQW(how) --> [how].
+
+xConj(and) --> [and].
+xConj(or) --> [or].
+xConj(yet) --> [yet].
+xConj(so) --> [so].
+xConj(because) --> [because].
+
+xAdj(adj(cute)) --> [cute].
+%xAdj(adj(funny)) --> [funny].
+%xAdj(adj(stupid)) --> [stupid].
 
 
-xAdj --> [cute].
-%xAdj --> [funny].
-%xAdj --> [stupid].
-
-
-xAdv(verb) --> [quickly].
-xAdv(adj) --> [very].
-xAdv(_) --> [gracefully].
+xAdv((adv(quickly)), verb) --> [quickly].
+xAdv((adv(very)), adj) --> [very].
+xAdv((adv(gracefully)), _) --> [gracefully].
 
 
 %% xS(D, E, F, G, []). how to generate a random sentence
 %% xS(present, plural, second, A, []). how to get a specific type of sentence
+
+
+%%------------------------------------------------------------------
+
+xs(Tree, Sent) :- ys(Tree, Sent, []).
+
+ys(Tree) --> xS(Tree, _, _, _).

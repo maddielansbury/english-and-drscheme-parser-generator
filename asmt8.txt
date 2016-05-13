@@ -335,8 +335,14 @@ xIC(ic(Tree))--> xInfVP(Tree,_).
 %   subject (xSubj), and an infinitive verb phrase (xInfVP).
 %% -------------------------------------------------------------------------- %
 
-xQ(q(QTree,STree,ITree)) --> xQP(QTree,_,Num,Pers),
-                             xSubj(STree,Num,Pers), xInfVP(ITree,_).
+xQ(q(QTree,STree,ITree)) --> xQP(QTree,_,Num,Pers), xSubj(STree,Num,Pers),
+                             xInfVP(ITree,_).
+
+xQ(q(QTree,STree,ATree,ITree)) --> xQP(QTree,_,Num,Pers), xSubj(STree,Num,Pers),
+                                   xAdvP(ATree), xInfVP(ITree,_).
+
+xQ(q(QTree,STree,ITree,ATree)) --> xQP(QTree,_,Num,Pers), xSubj(STree,Num,Pers),
+                                   xInfVP(ITree,_), xAdvP(ATree).
 
 %%============================================================================%%
 

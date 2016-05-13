@@ -206,8 +206,8 @@ write('------------------
 xs(Tree,[those,bureaucrats,are,frowning,naturally,and,they,were,cute]).
 
 write('------------------
-\nSentence: andy dwyer kissed very cute april ludgate so they run by us').
-xs(Tree,[andy,dwyer,kissed,very,cute,april,ludgate,so,they,run,by,us]).
+\nSentence: andy dwyer kissed very cute april ludgate so we ran by them').
+xs(Tree,[andy,dwyer,kissed,very,cute,april,ludgate,so,we,ran,by,them]).
 
 
 write('\nIMPERATIVE:

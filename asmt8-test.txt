@@ -224,7 +224,7 @@ write('------------------
 xs(Tree,[run,and,run]).
 
 write('------------------
-\nSentence: ').
+\nSentence: frownnaturallybehindus').
 xs(Tree,[]).
 
 write('------------------

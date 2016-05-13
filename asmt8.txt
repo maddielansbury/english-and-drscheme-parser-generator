@@ -311,13 +311,17 @@ xDC(ic(STree,PTree)) --> xSubj(STree,Num,Pers),
 %  An imperative sentence is made up of either...
 %% -------------------------------------------------------------------------- %
 
-%% one infinitive verb phrase (xInfVP):
+%% an optional "please" and one infinitive verb phrase (xInfVP):
 %---------------------------------------
 xI(i(Tree)) --> xInfVP(Tree,_).
+xI(i(please,Tree)) --> [please], xInfVP(Tree,_).
 
-%% two imperative independent clauses (xIC) separated by a conjunction:
+%% an optional "please" and two imperative independent clauses (xIC) separated
+%%  by a conjunction:
 %---------------------------------------
 xI(i(ATree,CTree,BTree)) --> xIC(ATree), xConj(CTree), xIC(BTree).
+xI(i(please,ATree,CTree,BTree)) --> [please],
+                                    xIC(ATree), xConj(CTree), xIC(BTree).
 xIC(ic(Tree))--> xInfVP(Tree,_).
 
 %%============================================================================%%

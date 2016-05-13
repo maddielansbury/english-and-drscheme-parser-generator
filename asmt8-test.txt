@@ -242,13 +242,34 @@ xs(Tree,[please,hug,her,but,sneeze,around,them]).
 
 write('\nINTERROGATIVE:
 ===========================').
+write('\nSentence: do many men sneeze naturally').
+xs(Tree,[do,many,men,sneeze,naturally]).
 
+write('------------------
+\nSentence: why does very cute april ludgate kiss quite dumb andy dwyer').
+xs(Tree,[why,does,very,cute,april,ludgate,kiss,quite,dumb,andy,dwyer]).
+
+write('------------------
+\nSentence: did leslie knope noisily run behind us').
+xs(Tree,[did,leslie,knope,noisily,run,behind,us]).
+
+write('------------------
+\nSentence: how did the splendid splendid bureaucrats help you').
+xs(Tree,[how,did,the,splendid,splendid,bureaucrats,help,you]).
+
+write('------------------
+\nSentence: where do they run').
+xs(Tree,[where,do,they,run]).
+
+write('------------------
+\nSentence: do you naturally hug ron swanson around leslie knope').
+xs(Tree,[do,you,naturally,hug,ron,swanson,around,leslie,knope]).
 
 
 %%------------------------------------------------------------------------------
 
 
-write('\INCORRECT SENTENCES:
+write('\nINCORRECT SENTENCES:
 ===========================').
 
 write('------------------

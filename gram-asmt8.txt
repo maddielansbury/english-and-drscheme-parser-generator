@@ -1,173 +1,468 @@
-%%  A sentence is formed by a noun phrase followed by a verb phrase.
-%%  The tense of the verb phrase must be the same as the tense of
-%%  the sentence.
 
-xS(Tree, Tense, Num, Person) --> xD(Tree, Tense, Num, Person).
-xS(Tree, Tense, Num, Person) --> xQ(Tree, Tense, Num, Person).
-xS(Tree, _, _, _) --> xI(Tree).
+%%============================================================================%%
+%  xs -- a wrapper function for xS.
+%     INPUTS: Tree, a parse tree.
+%             Sent, a sentence represented by a list.
+%  Use xs(Tree, Sent) to generate a sentence (xS) and its parse tree!
+%% -------------------------------------------------------------------------- %
 
-xD(d(NTree, VTree), Tense, Num, Person) --> xSubj(NTree, Tense, Num, Person), xVP(VTree, Tense, Num, Person).
-xQ(q(HTree, NTree, VTree), Tense, Num, Person) --> xH(HTree, Tense, Num, Person), xSubj(NTree, Tense, Num, Person), xInfVP(VTree, _).
-xI(i(VTree)) --> xInfVP(VTree, _).
+xs(Tree, Sent) :- xS(Tree, Sent, []).
 
-
-xNP(np(NTree), Tense, Num, Person) --> xPropNoun(NTree, Tense, Num, Person).
-xNP(np(ATree, NTree), Tense, Num, Person) --> xAP(ATree), xPropNoun(NTree, Tense, Num, Person).
-
-xNP(np(NTree), Tense, plural, Person) --> xNoun(NTree, Tense, plural, Person).
-xNP(np(ATree, NTree), Tense, plural, Person) --> xAP(ATree), xNoun(NTree, Tense, plural, Person).
-
-xNP(np(DTree, ATree, NTree), Tense, Num, Person) --> xDet(DTree, Tense, Num, Person), xAP(ATree), xNoun(NTree, Tense, Num, Person).
-xNP(np(DTree, NTree), Tense, Num, Person) --> xDet(DTree, Tense, Num, Person), xNoun(NTree, Tense, Num, Person).
+%%============================================================================%%
 
 
-xSubj(np(NTree), Tense, Num, Person) --> xNP(NTree, Tense, Num, Person).
-xSubj(np(NTree), Tense, Num, Person) --> xPronoun(NTree, Tense, Num, Person).
+
+%%====================%%
+%%     SENTENCES      %
+%%====================%%======================================================%%
+%  A sentence is declarative (xD), imperative (xI), or interrogative (xQ).
+%% -------------------------------------------------------------------------- %
+
+xS(Tree) --> xD(Tree).
+xS(Tree) --> xI(Tree).
+xS(Tree) --> xQ(Tree).
+
+%%============================================================================%%
 
 
-xObj(np(NTree)) --> xNP(NTree, _, _, _).
-xObj(np(NTree)) --> xObjPronoun(NTree).
+
+%%====================%%
+%%    DECLARATIVES    %
+%%====================%%======================================================%%
+%  A declarative sentence is made up of either...
+%% -------------------------------------------------------------------------- %
+
+%% a subject (xSubj) and a verb phrase (xVP):
+%---------------------------------------
+xD(d(STree,VTree)) --> xSubj(STree,Num,Pers),
+                       xVP(VTree,_,Num,Pers).
+
+%% two declarative independent clauses (xDC) separated by a conjunction:
+%---------------------------------------
+xD(d(ATree,CTree,BTree)) --> xDC(ATree), xConj(CTree), xDC(BTree).
+xDC(ic(STree,VTree)) --> xSubj(STree,Num,Pers),
+                         xVP(VTree,_,Num,Pers).
+
+%%============================================================================%%
 
 
-xPP(prep(PTree, NTree)) --> xPrep(PTree), xNP(NTree, _, _, _).
-xPP(prep(PTree, NTree)) --> xPrep(PTree), xObjPronoun(NTree).
+
+%%====================%%
+%%    IMPERATIVES     %
+%%====================%%======================================================%%
+%  An imperative sentence is made up of either...
+%% -------------------------------------------------------------------------- %
+
+%% one infinitive verb phrase (xInfVP):
+%---------------------------------------
+xI(i(Tree)) --> xInfVP(Tree,_).
+
+%% two imperative independent clauses (xIC) separated by a conjunction:
+%---------------------------------------
+xI(i(ATree,CTree,BTree)) --> xIC(ATree), xConj(CTree), xIC(BTree).
+xIC(ic(Tree))--> xInfVP(Tree,_).
+
+%%============================================================================%%
 
 
-xVP(vp(VTree), Tense, Num, Person) --> xIVerb(VTree, Tense, Num, Person).
-xVP(vp(VTree, ATree), Tense, Num, Person) --> xIVerb(VTree, Tense, Num, Person), xAdvP(ATree).
-xVP(vp(ATree, VTree), Tense, Num, Person) --> xAdvP(ATree), xIVerb(VTree, Tense, Num, Person).
 
-xVP(vp(VTree, NTree), Tense, Num, Person) --> xIVerb(VTree, Tense, Num, Person), xPP(NTree).
-xVP(vp(ATree, VTree, NTree), Tense, Num, Person) --> xAdvP(ATree), xIVerb(VTree, Tense, Num, Person), xPP(NTree).
-xVP(vp(VTree, ATree, NTree), Tense, Num, Person) --> xIVerb(VTree, Tense, Num, Person), xAdvP(ATree), xPP(NTree).
+%%====================%%
+%%   INTERROGATIVES   %
+%%====================%%======================================================%%
+%  An interrogative sentence is made up of a question helper phrase (xQP), a
+%   subject (xSubj), and an infinitive verb phrase (xInfVP).
+%% -------------------------------------------------------------------------- %
 
-xVP(vp(VTree, DTree), Tense, Num, Person) --> xTVerb(VTree, Tense, Num, Person), xObj(DTree).
-xVP(vp(AdvTree, VTree, DTree), Tense, Num, Person) --> xAdvP(AdvTree), xTVerb(VTree, Tense, Num, Person), xObj(DTree).
+xQ(q(QTree,STree,ITree)) --> xQP(QTree,_,Num,Pers),
+                             xSubj(STree,Num,Pers), xInfVP(ITree,_).
 
-xVP(vp(VTree, DTree), Tense, Num, Person) --> xTBVerb(VTree, Tense, Num, Person), xObj(DTree).
-xVP(vp(VTree, ATree), Tense, Num, Person) --> xTBVerb(VTree, Tense, Num, Person), xAP(ATree).
-
-
-xInfVP(vp(VTree), intran) --> xInfVerb(VTree, intran).
-xInfVP(vp(VTree, PTree), intran) --> xInfVerb(VTree, intran), xPP(PTree).
-
-xInfVP(vp(VTree, NTree), tran) --> xInfVerb(VTree, tran), xObj(NTree).
+%%============================================================================%%
 
 
+
+%%====================%%
+%%      SUBJECTS      %
+%%====================%%======================================================%%
+%  A subject is made up of either...
+%% -------------------------------------------------------------------------- %
+
+%% a noun phrase (xNP):
+%---------------------------------------
+xSubj(Tree,Num,Pers) --> xNP(Tree,Num,Pers).
+
+%% a subject pronoun (xPronoun):
+%---------------------------------------
+xSubj(Tree,Num,Pers) --> xPronoun(Tree,Num,Pers).
+
+%%============================================================================%%
+
+
+
+%%====================%%
+%%   NOUN PHRASES     %
+%%====================%%======================================================%%
+%  A noun phrase is made up of either...
+%% -------------------------------------------------------------------------- %
+
+%% an optional adjective phrase (xAP) and a proper noun (xPropNoun):
+%---------------------------------------
+xNP(np(Tree),Num,Pers) --> xPropNoun(Tree,Num,Pers).
+xNP(np(ATree,NTree),Num,Pers) --> xAP(ATree),
+                                  xPropNoun(NTree,Num,Pers).
+
+%% a determiner (xDet), an optional adjective phrase (xAP), and a noun (xNoun):
+%---------------------------------------
+xNP(np(DTree,ATree,NTree),Num,Pers) --> xDet(DTree,Num,Pers), xAP(ATree),
+                                        xNoun(NTree,Num,Pers).
+xNP(np(DTree,NTree),Num,Pers) --> xDet(DTree,Num,Pers), xNoun(NTree,Num,Pers).
+
+%% Plural nouns do not require determiners.
+%---------------------------------------
+xNP(np(Tree),plural,Pers) --> xNoun(Tree,plural,Pers).
+xNP(np(ATree,NTree),plural,Pers) --> xAP(ATree), xNoun(NTree,plural,Pers).
+
+%%============================================================================%%
+
+
+
+%%====================%%
+%%    VERB PHRASES    %
+%%====================%%======================================================%%
+%  A standard verb phrase is made up of either...
+%% -------------------------------------------------------------------------- %
+
+%% An intransitive verb (xIVerb) with an optional adverbial phrase (xAdvP) on
+%%  either side:
+%---------------------------------------
+xVP(vp(Tree),Tens,Num,Pers) --> xIVerb(Tree,Tens,Num,Pers).
+xVP(vp(VTree,ATree),Tens,Num,Pers) --> xIVerb(VTree,Tens,Num,Pers),
+                                       xAdvP(ATree).
+xVP(vp(ATree,VTree),Tens,Num,Pers) --> xAdvP(ATree),
+                                       xIVerb(VTree,Tens,Num,Pers).
+
+%% An intransitive verb (xIVerb) with an optional adverbial phrase (xAdvP) on
+%%  either side and a prepositional phrase (xPP):
+%---------------------------------------
+xVP(vp(VTree,PTree),Tens,Num,Pers) --> xIVerb(VTree,Tens,Num,Pers), xPP(PTree).
+xVP(vp(ATree,VTree,PTree),Tens,Num,Pers) --> xAdvP(ATree),
+                                             xIVerb(VTree,Tens,Num,Pers),
+                                             xPP(PTree).
+xVP(vp(VTree,ATree,PTree),Tens,Num,Pers) --> xIVerb(VTree,Tens,Num,Pers),
+                                             xAdvP(ATree), xPP(PTree).
+
+%% An optional adverbial phrase (xAdvP), a transitive verb (xTVerb), and an
+%%  object (xObj):
+%---------------------------------------
+xVP(vp(VTree,OTree),Tens,Num,Pers) --> xTVerb(VTree,Tens,Num,Pers), xObj(OTree).
+xVP(vp(ATree,VTree,OTree),Tens,Num,Pers) --> xAdvP(ATree),
+                                             xTVerb(VTree,Tens,Num,Pers),
+                                             xObj(OTree).
+
+%% A "to be" verb (xTBVerb) and an object (xObj):
+%---------------------------------------
+xVP(vp(VTree,OTree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers), xObj(OTree).
+
+%% A "to be" verb (xTBVerb) and an adjective phrase (xAP):
+%---------------------------------------
+xVP(vp(VTree,ATree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers), xAP(ATree).
+
+
+%% -------------------------------------------------------------------------- %
+%  An infinitive verb phrase is made up of either...
+%% -------------------------------------------------------------------------- %
+
+%% An infinitive verb (xInfVerb):
+%---------------------------------------
+xInfVP(vp(Tree),intran) --> xInfVerb(Tree,intran).
+
+%% An infinitive verb (xInfVerb) and a prepositional phrase (xPP):
+%---------------------------------------
+xInfVP(vp(VTree,PTree),intran) --> xInfVerb(VTree,intran), xPP(PTree).
+
+%% An infinitive verb (xInfVerb) and an object (xObj):
+%---------------------------------------
+xInfVP(vp(VTree,OTree),tran) --> xInfVerb(VTree,tran),xObj(OTree).
+
+%%============================================================================%%
+
+
+
+%%=======================%%
+%% PREPOSITIONAL PHRASES %
+%%=======================%%===================================================%%
+%  A prepositional phrase is made up of a preposition (xPrep) and an
+%   object (xObj).
+%% -------------------------------------------------------------------------- %
+
+xPP(pp(PTree,OTree)) --> xPrep(PTree), xObj(OTree).
+
+%%============================================================================%%
+
+
+
+%%====================%%
+%%       OBJECTS      %
+%%====================%%======================================================%%
+%  An object is made up of either...
+%% -------------------------------------------------------------------------- %
+
+%% A noun phrase (xNP):
+%---------------------------------------
+xObj(Tree) --> xNP(Tree,_,_).
+
+%% An object pronoun (xObjPronoun):
+%---------------------------------------
+xObj(Tree) --> xObjPronoun(Tree).
+
+%%============================================================================%%
+
+
+
+%%====================%%
+%%  ADJECTIVE PHRASES %
+%%====================%%======================================================%%
+%  An adjective phrase is made up of either...
+%% -------------------------------------------------------------------------- %
+
+%% An optional adverb that modifies an adjective (xAdv) and an
+%%  adjective (xAdj):
+%---------------------------------------
 xAP(ap(Tree)) --> xAdj(Tree).
-xAP(ap(AdvTree, AdjTree)) --> xAdv(AdvTree, adj), xAdj(AdjTree).
-xAP(ap(ATree1, ATree2)) --> xAdj(ATree1), xAdj(ATree2).
+xAP(ap(AdvTree,AdjTree)) --> xAdv(AdvTree,adj), xAdj(AdjTree).
 
-xAdvP(Tree) --> xAdv(Tree, verb).
+%% Two adjectives (xAdj):
+%---------------------------------------
+xAP(ap(ATree1,ATree2)) --> xAdj(ATree1), xAdj(ATree2).
+
+%%============================================================================%%
 
 
-xQP(h(QTree,HTree), Tense, Num, Person) --> xQW(QTree), xHelper(HTree, Tense, Num, Person).
-xQP(h(Tree), Tense, Num, Person) --> xHelper(Tree, Tense, Num, Person).
 
-%%------------------------------------------------------------------------------------------
+%%====================%%
+%%  ADVERBIAL PHRASES %
+%%====================%%======================================================%%
+%  An adverbial phrase is made up of an adverb that can modify a verb.
+%% -------------------------------------------------------------------------- %
 
-%% Some words...
+xAdvP(Tree) --> xAdv(Tree,verb).
 
-xDet(det(a), _, singular, third) --> [a].
-xDet(det(the), _, _, third) --> [the].
-xDet(det(some), _, _, third) --> [some].
+%%============================================================================%%
 
-xNoun(n(woman), _, singular, third) --> [woman].
-xNoun(n(women), _, plural, third) --> [women].
 
-%xNoun(n(man), _, singular, third) --> [man].
-%xNoun(n(men), _, plural, third) --> [men].
 
-xPropNoun(pn(april, ludgate), _, singular, third) --> [april, ludgate].
-xPropNoun(pn(andy, dwyer), _, singular, third) --> [andy, dwyer].
-%xPropNoun(pn(ron, swanson), _, singular, third) --> [ron, swanson].
+%%===========================%%
+%%  QUESTION HELPER PHRASES  %
+%%===========================%%===============================================%%
+%  A question helper phrase is made up of an optional question word (xQW) and
+%   a question helper (xHelper).
+%% -------------------------------------------------------------------------- %
 
-% Subject pronouns
+xQP(qhelp(QTree,HTree),Tens,Num,Pers) --> xQW(QTree),
+                                          xHelper(HTree,Tens,Num,Pers).
+xQP(qhelp(Tree),Tens,Num,Pers) --> xHelper(Tree,Tens,Num,Pers).
 
-xPronoun(pro(you), _, _, second) --> [you].
-xPronoun(pro(i), _, singular, first) --> [i].
-xPronoun(pro(we), _, plural, first) --> [we].
-xPronoun(pro(they), _, plural, third) --> [they].
-xPronoun(pro(she), _, singular, third) --> [she].
-xPronoun(pro(he), _, singular, third) --> [he].
+%%============================================================================%%
 
-% Indirect object pronouns:
 
-xObjPronoun(pro(us)) --> [us].
-xObjPronoun(pro(me)) --> [me].
-xObjPronoun(pro(him)) --> [him].
-xObjPronoun(pro(her)) --> [her].
-xObjPronoun(pro(them)) --> [them].
-xObjPronoun(pro(you)) --> [you].
 
-%% Some more words...
+%%====================%%
+%%        WORDS       %
+%%====================%%======================================================%%
+%  Words to use!
+%% -------------------------------------------------------------------------- %
 
-xPrep(to) --> [to].
-%xPrep(from) --> [from].
-%xPrep(around) --> [around].
+%% -------------------------------------------------------------------------- %
+%  Determiners (number and person specified):
+%% -------------------------------------------------------------------------- %
+xDet(det(a),singular,third) --> [a].
+xDet(det(that),singular,third) --> [that].
+xDet(det(the),_,third) --> [the].
+xDet(det(some),_,third) --> [some].
+xDet(det(many),plural,third) --> [many].
+xDet(det(those),plural,third) --> [those].
 
-%%  Individual words.  Here, the tense of a given word is
-%%  specified by a constant (e.g., past or present).
+%% -------------------------------------------------------------------------- %
+%  Nouns (number and person specified):
+%% -------------------------------------------------------------------------- %
+xNoun(n(woman),singular,third) --> [woman].
+xNoun(n(women),plural,third) --> [women].
+xNoun(n(man),singular,third) --> [man].
+xNoun(n(men),plural,third) --> [men].
+xNoun(n(employee),singular,third) --> [employee].
+xNoun(n(employees),plural,third) --> [employees].
+xNoun(n(intern),singular,third) --> [intern].
+xNoun(n(interns),plural,third) --> [interns].
+xNoun(n(nurse),singular,third) --> [nurse].
+xNoun(n(nurses),plural,third) --> [nurses].
 
-xIVerb(run, present, singular, first) --> [run].
-xIVerb(run, present, singular, second) --> [run].
-xIVerb(runs, present, singular, third) --> [runs].
-xIVerb(run, present, plural, _) --> [run].
-xIVerb(ran, past, _, _) --> [ran].
+%% -------------------------------------------------------------------------- %
+%  Proper Nouns (number and person specified):
+%% -------------------------------------------------------------------------- %
+xPropNoun(pn(april,ludgate),singular,third) --> [april,ludgate].
+xPropNoun(pn(andy,dwyer),singular,third) --> [andy,dwyer].
+xPropNoun(pn(ron,swanson),singular,third) --> [ron,swanson].
+xPropNoun(pn(leslie,knope),singular,third) --> [leslie,knope].
+xPropNoun(pn(ben,wyatt),singular,third) --> [ben,wyatt].
 
-xTVerb(hug, present, singular, first) --> [hug].
-xTVerb(hug, present, singular, second) --> [hug].
-xTVerb(hugs, present, singular, third) --> [hugs].
-xTVerb(hug, present, plural, _) --> [hug].
-xTVerb(hugged, past, _, _) --> [hugged].
+%% -------------------------------------------------------------------------- %
+%  Subject Pronouns (number and person specified):
+%% -------------------------------------------------------------------------- %
+xPronoun(p(you),_,second) --> [you].
+xPronoun(p(i),singular,first) --> [i].
+xPronoun(p(we),plural,first) --> [we].
+xPronoun(p(they),plural,third) --> [they].
+xPronoun(p(she),singular,third) --> [she].
+xPronoun(p(he),singular,third) --> [he].
 
-xInfVerb(run, intran) --> [run].
-xInfVerb(hug, tran) --> [hug].
+%% -------------------------------------------------------------------------- %
+%  Object Pronouns:
+%% -------------------------------------------------------------------------- %
+xObjPronoun(p(us)) --> [us].
+xObjPronoun(p(me)) --> [me].
+xObjPronoun(p(him)) --> [him].
+xObjPronoun(p(her)) --> [her].
+xObjPronoun(p(them)) --> [them].
+xObjPronoun(p(you)) --> [you].
 
-% -------------TO--BE--VERBS----------------
+%% -------------------------------------------------------------------------- %
+%  Prepositions:
+%% -------------------------------------------------------------------------- %
+xPrep(by) --> [by].
+xPrep(behind) --> [behind].
+xPrep(around) --> [around].
 
-xTBVerb(am, present, singular, first) --> [am].
-xTBVerb(are, present, singular, second) --> [are].
-xTBVerb(is, present, singular, third) --> [is].
+%% -------------------------------------------------------------------------- %
+%  Verbs (tense, number, and person specified):
+%% -------------------------------------------------------------------------- %
 
-xTBVerb(are, present, plural, _) --> [are].
+%% "TO BE" VERBS:
+%---------------------------------------
+xTBVerb(am,present,singular,first) --> [am].
+xTBVerb(are,present,singular,second) --> [are].
+xTBVerb(is,present,singular,third) --> [is].
+xTBVerb(are,present,plural,_) --> [are].
 
-xTBVerb(was, past, singular, first) --> [was].
-xTBVerb(was, past, singular, third) --> [was].
-xTBVerb(were, past, plural, _) --> [were].
+xTBVerb(was,past,singular,first) --> [was].
+xTBVerb(were,past,singular,second) --> [were].
+xTBVerb(was,past,singular,third) --> [was].
+xTBVerb(were,past,plural,_) --> [were].
 
-% ------------------------------------------
 
-%%  xHelper:  holds for the helper verbs "does", "did", etc.
+%% INTRANSITIVE VERBS:
+%---------------------------------------
+xIVerb(run,present,singular,first) --> [run].
+xIVerb(run,present,singular,second) --> [run].
+xIVerb(runs,present,singular,third) --> [runs].
+xIVerb(run,present,plural,_) --> [run].
+xIVerb(ran,past,_,_) --> [ran].
 
-xHelper(does, present, singular, third) --> [does].
-xHelper(do, present, singular, second) --> [do].
-xHelper(do, present, singular, first) --> [do].
-xHelper(do, present, plural, _) --> [do].
-xHelper(did, past, _, _) --> [did].
+xIVerb(frown,present,singular,first) --> [frown].
+xIVerb(frown,present,singular,second) --> [frown].
+xIVerb(frowns,present,singular,third) --> [frowns].
+xIVerb(frown,present,plural,_) --> [frown].
+xIVerb(frowned,past,_,_) --> [frowned].
 
+xIVerb(sneeze,present,singular,first) --> [sneeze].
+xIVerb(sneeze,present,singular,second) --> [sneeze].
+xIVerb(sneezes,present,singular,third) --> [sneezes].
+xIVerb(sneeze,present,plural,_) --> [sneeze].
+xIVerb(sneezed,past,_,_) --> [sneezed].
+
+%% Intransitive verbs can also be made of a "to be" verb (xTBVerb) and an
+%%  intransitive participle (xPart):
+%---------------------------------------
+xIVerb(part(VTree,PTree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers),
+                                            xPart(PTree,intran).
+
+
+%% TRANSITIVE VERBS:
+%---------------------------------------
+xTVerb(hug,present,singular,first) --> [hug].
+xTVerb(hug,present,singular,second) --> [hug].
+xTVerb(hugs,present,singular,third) --> [hugs].
+xTVerb(hug,present,plural,_) --> [hug].
+xTVerb(hugged,past,_,_) --> [hugged].
+
+xTVerb(kiss,present,singular,first) --> [kiss].
+xTVerb(kiss,present,singular,second) --> [kiss].
+xTVerb(kisses,present,singular,third) --> [kisses].
+xTVerb(kiss,present,plural,_) --> [kiss].
+xTVerb(kissed,past,_,_) --> [kissed].
+
+xTVerb(help,present,singular,first) --> [help].
+xTVerb(help,present,singular,second) --> [help].
+xTVerb(helps,present,singular,third) --> [helps].
+xTVerb(help,present,plural,_) --> [help].
+xTVerb(helped,past,_,_) --> [helped].
+
+%% Transitive verbs can also be made of a "to be" verb (xTBVerb) and a
+%%  transitive participle (xPart):
+%---------------------------------------
+xTVerb(part(VTree,PTree),Tens,Num,Pers) --> xTBVerb(VTree,Tens,Num,Pers),
+                                            xPart(PTree,tran).
+
+
+%% INFINITIVE VERBS:
+%---------------------------------------
+xInfVerb(run,intran) --> [run].
+xInfVerb(frown,intran) --> [frown].
+xInfVerb(sneeze,intran) --> [sneeze].
+xInfVerb(hug,tran) --> [hug].
+xInfVerb(kiss,tran) --> [kiss].
+xInfVerb(help,tran) --> [help].
+
+
+%% PARTICIPLES:
+%---------------------------------------
+xPart(running,intran) --> [running].
+xPart(frowning,intran) --> [frowning].
+xPart(sneezing,intran) --> [sneezing].
+xPart(hugging,tran) --> [hugging].
+xPart(kissing,tran) --> [kissing].
+xPart(helping,tran) --> [helping].
+
+
+%% -------------------------------------------------------------------------- %
+%  Question Helpers (tense, number, and person specified):
+%% -------------------------------------------------------------------------- %
+xHelper(do,present,singular,first) --> [do].
+xHelper(do,present,singular,second) --> [do].
+xHelper(does,present,singular,third) --> [does].
+xHelper(do,present,plural,_) --> [do].
+xHelper(did,past,_,_) --> [did].
+
+%% -------------------------------------------------------------------------- %
+%  Question Words:
+%% -------------------------------------------------------------------------- %
 xQW(where) --> [where].
 xQW(when) --> [when].
 xQW(why) --> [why].
 xQW(how) --> [how].
 
+%% -------------------------------------------------------------------------- %
+%  Conjunctions:
+%% -------------------------------------------------------------------------- %
+xConj(conj(and)) --> [and].
+xConj(conj(or)) --> [or].
+xConj(conj(but)) --> [but].
 
+%% -------------------------------------------------------------------------- %
+%  Adjectives:
+%% -------------------------------------------------------------------------- %
 xAdj(adj(cute)) --> [cute].
-%xAdj(adj(funny)) --> [funny].
-%xAdj(adj(stupid)) --> [stupid].
+xAdj(adj(immaculate)) --> [immaculate].
+xAdj(adj(funny)) --> [funny].
+xAdj(adj(dumb)) --> [dumb].
 
-
-xAdv((adv(quickly)), verb) --> [quickly].
+%% -------------------------------------------------------------------------- %
+%  Adverbs (modifiable part of speech specified):
+%% -------------------------------------------------------------------------- %
+xAdv((adv(rapidly)), verb) --> [rapidly].
+xAdv((adv(noisily)), verb) --> [noisily].
 xAdv((adv(very)), adj) --> [very].
+xAdv((adv(really)), adj) --> [quite].
 xAdv((adv(gracefully)), _) --> [gracefully].
+xAdv((adv(naturally)), _) --> [naturally].
 
+%%============================================================================%%
 
-%% xS(D, E, F, G, []). how to generate a random sentence
-%% xS(present, plural, second, A, []). how to get a specific type of sentence
-
-
-%%------------------------------------------------------------------
-
-xs(Tree, Sent) :- ys(Tree, Sent, []).
-
-ys(Tree) --> xS(Tree, _, _, _).

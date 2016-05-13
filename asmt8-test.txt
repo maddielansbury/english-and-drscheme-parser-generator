@@ -224,24 +224,20 @@ write('------------------
 xs(Tree,[run,and,run]).
 
 write('------------------
-\nSentence: frownnaturallybehindus').
-xs(Tree,[]).
+\nSentence: please frown naturally behind us').
+xs(Tree,[please,frown,naturally,behind,us]).
 
 write('------------------
-\nSentence: ').
-xs(Tree,[]).
+\nSentence: please help me').
+xs(Tree,[please,help,me]).
 
 write('------------------
-\nSentence: ').
-xs(Tree,[]).
+\nSentence: kiss ron swanson near the quite dumb man').
+xs(Tree,[kiss,ron,swanson,near,the,quite,dumb,man]).
 
 write('------------------
-\nSentence: ').
-xs(Tree,[]).
-
-write('------------------
-\nSentence: ').
-xs(Tree,[]).
+\nSentence: please hug her but sneeze around them').
+xs(Tree,[please,hug,her,but,sneeze,around,them]).
 
 
 write('\nINTERROGATIVE:
